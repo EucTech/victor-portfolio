@@ -1,0 +1,7 @@
+# Not a monorepo — this file exists only to approve the postinstall scripts
+# that pnpm 10+ blocks by default (sharp handles image optimisation).
+packages:
+  - "."
+onlyBuiltDependencies:
+  - sharp
+  - unrs-resolver
