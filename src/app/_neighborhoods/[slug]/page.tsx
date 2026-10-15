@@ -24,8 +24,8 @@ export async function generateMetadata({
   if (!n) return pageMeta({ title: "Neighborhood not found", description: "" });
 
   return pageMeta({
-    title: `${n.name}, Kigali — Neighborhood Guide`,
-    description: `${n.tagline}. A guide to living and buying property in ${n.name}, Kigali — who it suits, what to expect and current price guidance.`,
+    title: `${n.name}, Kigali: Neighborhood Guide`,
+    description: `${n.tagline}. A guide to living and buying property in ${n.name}, Kigali: who it suits, what to expect and current price guidance.`,
     path: `/neighborhoods/${n.slug}`,
     image: n.image,
   });
@@ -44,7 +44,7 @@ export default async function NeighborhoodPage({
 
   return (
     <>
-      <PageHero label="Neighborhood guide" title={n.name} intro={n.tagline} image={n.image} />
+      <PageHero title={n.name} intro={n.tagline} image={n.image} />
 
       <section className="py-20 md:py-28">
         <Container size="wide">
@@ -105,7 +105,7 @@ export default async function NeighborhoodPage({
 
       <CtaBand
         title={`Thinking about ${n.name}?`}
-        text="I can walk you through the area in person and show you what's available — including properties that never reach the listings."
+        text="I can walk you through the area in person and show you what's available, including properties that never reach the listings."
       />
       <JsonLd
         data={breadcrumbSchema([
