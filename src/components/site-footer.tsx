@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import { ArrowUpRight, Mail, Phone } from "lucide-react";
+import { Mail, Phone } from "lucide-react";
 import { InstagramIcon, LinkedInIcon, TikTokIcon, WhatsAppIcon, YoutubeIcon } from "./ui/social-icons";
 import { nav, site, whatsappLink } from "@/data/site";
 import { Magnetic } from "./motion/magnetic";
@@ -15,16 +15,19 @@ export function SiteFooter() {
             Let&apos;s find the place <em className="text-gold">that fits</em> your life.
           </h2>
           <Magnetic strength={0.4}>
-            <Link
-              href="/contact"
-              data-cursor="Talk"
+            <a
+              href={whatsappLink()}
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Start a conversation with Victor on WhatsApp"
+              data-cursor="Chat"
               className="group flex size-36 shrink-0 flex-col items-center justify-center gap-2 rounded-full bg-gold text-center text-[0.75rem] uppercase tracking-[0.16em] text-ink transition-colors duration-500 hover:bg-white md:size-44"
             >
-              <ArrowUpRight className="size-6 transition-transform duration-500 group-hover:rotate-45" strokeWidth={1.25} />
+              <WhatsAppIcon className="size-6 transition-transform duration-500 group-hover:scale-110" />
               Start a
               <br />
               conversation
-            </Link>
+            </a>
           </Magnetic>
         </div>
 
