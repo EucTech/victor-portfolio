@@ -14,7 +14,7 @@ export const services: Service[] = [
       "Helping buyers identify properties that align with their lifestyle, goals, and budget while providing professional guidance throughout the purchasing process.",
     detail: [
       "Buying property is rarely only a financial decision. It affects where your children go to school, how long you sit in traffic, and how you feel at the end of the day.",
-      "I start by understanding what you actually need, then shortlist properties worth your time — including ones that are not publicly listed. You see honest assessments, not sales pitches.",
+      "I start by understanding what you actually need, then shortlist properties worth your time, including ones that are not publicly listed. You see honest assessments, not sales pitches.",
     ],
     points: [
       "Needs assessment and budget planning",
@@ -32,7 +32,7 @@ export const services: Service[] = [
       "Helping property owners position, market, and present their properties effectively to attract qualified buyers and achieve the best possible outcome.",
     detail: [
       "A property that sits on the market loses value in the eyes of buyers. Pricing and presentation in the first two weeks determine most of the outcome.",
-      "I advise on realistic pricing, prepare the property for viewings, and market it to the buyers most likely to act — then manage negotiations to protect your position.",
+      "I advise on realistic pricing, prepare the property for viewings, and market it to the buyers most likely to act, then manage negotiations to protect your position.",
     ],
     points: [
       "Comparative market valuation",
@@ -50,7 +50,7 @@ export const services: Service[] = [
       "Providing market insights and thoughtful analysis to help clients evaluate opportunities and make informed long-term property decisions.",
     detail: [
       "Kigali rewards patient, well-informed investors. It punishes people who buy on enthusiasm alone.",
-      "I help you evaluate opportunities on the numbers — yield, vacancy risk, exit options and the documentation behind the asset — so that a decision holds up years later.",
+      "I help you evaluate opportunities on the numbers (yield, vacancy risk, exit options and the documentation behind the asset) so that a decision holds up years later.",
     ],
     points: [
       "Rental yield and cash-flow analysis",
