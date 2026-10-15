@@ -11,7 +11,7 @@ import { pageMeta, JsonLd, breadcrumbSchema } from "@/lib/seo";
 export const metadata = pageMeta({
   title: "Kigali Neighborhood Guides",
   description:
-    "Guides to Kigali's residential neighborhoods — Nyarutarama, Kacyiru, Kibagabaga and Gacuriro. Who each area suits, what it costs, and what to expect.",
+    "Guides to Kigali's residential neighborhoods: Nyarutarama, Kacyiru, Kibagabaga and Gacuriro. Who each area suits, what it costs, and what to expect.",
   path: "/neighborhoods",
 });
 
@@ -19,7 +19,6 @@ export default function NeighborhoodsPage() {
   return (
     <>
       <PageHero
-        label="Neighborhoods"
         title="Know the Area Before the Address"
         intro="The right house in the wrong neighborhood is still the wrong decision. These guides cover who each area suits and what it realistically costs."
       />
@@ -71,7 +70,7 @@ export default function NeighborhoodsPage() {
         </Container>
       </section>
 
-      <CtaBand title="Not sure which area fits you?" text="Tell me how you live — commute, schools, weekends — and I'll tell you where to look." />
+      <CtaBand title="Not sure which area fits you?" text="Tell me how you live (commute, schools, weekends) and I'll tell you where to look." />
       <JsonLd
         data={breadcrumbSchema([
           { name: "Home", path: "/" },
