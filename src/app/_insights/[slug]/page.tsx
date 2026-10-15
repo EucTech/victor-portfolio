@@ -136,7 +136,7 @@ export default async function InsightPage({
             <div className="mt-10 grid gap-10 md:grid-cols-2">
               {more.map((m) => (
                 <Link key={m.slug} href={`/insights/${m.slug}`} className="group block">
-                  <p className="text-[0.6875rem] uppercase tracking-[0.16em] text-gold-deep">
+                  <p className="text-[0.8125rem] text-muted">
                     {m.category}
                   </p>
                   <h3 className="mt-2 font-display text-xl text-ink transition-colors group-hover:text-gold-deep">
