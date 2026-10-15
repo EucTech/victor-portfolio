@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { BrandMark } from "../ui/brand-mark";
 
 /**
  * First-visit curtain: the monogram settles, a gold rule draws across,
@@ -9,14 +9,7 @@ export function IntroCurtain() {
   return (
     <div aria-hidden="true" className="intro-curtain">
       <div className="intro-curtain__inner">
-        <Image
-          src="/brand/logo-mark.png"
-          alt=""
-          width={227}
-          height={174}
-          priority
-          className="intro-curtain__mark h-16 w-auto md:h-20"
-        />
+        <BrandMark className="intro-curtain__mark size-16 text-ink md:size-20" />
         <span className="intro-curtain__rule" />
         <span className="intro-curtain__name font-display">Victor Chiemerie</span>
       </div>
