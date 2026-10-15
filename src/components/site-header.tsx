@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import { BrandMark } from "./ui/brand-mark";
 import { usePathname } from "next/navigation";
 import {
   AnimatePresence,
@@ -59,14 +59,7 @@ export function SiteHeader() {
             )}
           >
             <span className="flex size-10 items-center justify-center rounded-full bg-ink md:size-11">
-              <Image
-                src="/brand/logo-mark.png"
-                alt=""
-                width={227}
-                height={174}
-                priority
-                className="h-6 w-auto transition-transform duration-700 group-hover:scale-110 md:h-7"
-              />
+              <BrandMark className="size-6 text-white transition-transform duration-700 group-hover:scale-110 md:size-7" />
             </span>
             <span className="flex flex-col leading-none">
               <span className="font-display text-[1.05rem] tracking-[0.04em] text-ink md:text-lg">
