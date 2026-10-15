@@ -4,7 +4,7 @@
  */
 export const site = {
   name: "Victor Chiemerie",
-  role: "Realtor — Kigali, Rwanda",
+  role: "Realtor in Kigali, Rwanda",
   tagline: "Helping You Make Confident Property Decisions in Rwanda",
   description:
     "Victor Chiemerie is a Kigali-based realtor helping buyers, sellers and investors make confident property decisions in Rwanda with honest advice and local market expertise.",
@@ -17,6 +17,9 @@ export const site = {
   whatsapp: "250795026599", // digits only, no + — used in wa.me links
   email: "victorchiemerie012@gmail.com",
 
+  // Professional portrait used on the home, about and contact pages
+  portrait: "/images/victor/portrait.jpg",
+
   // TODO: add the office street address for the contact page + Google Map
   address: {
     line1: "",
@@ -24,10 +27,12 @@ export const site = {
     country: "Rwanda",
   },
 
-  // TODO: replace the "#" placeholders with the real profile URLs.
+  // Social profiles, shown in the footer, the menu and on the contact page
   socials: {
-    instagram: "#",
-    youtube: "#",
+    instagram: "https://www.instagram.com/victr_chiemerie",
+    tiktok: "https://www.tiktok.com/@victor_chiemerie1",
+    linkedin: "https://www.linkedin.com/in/victor710",
+    youtube: "https://www.youtube.com/channel/UCTHx5pLWCZL4tXi_sDadadg",
   },
 
   brandStatement:
@@ -39,23 +44,25 @@ export const nav = [
   { label: "Home", href: "/" },
   { label: "About", href: "/about" },
   { label: "Properties", href: "/properties" },
-  { label: "Neighborhoods", href: "/neighborhoods" },
+  // { label: "Neighborhoods", href: "/neighborhoods" }, // hidden for now
   { label: "Services", href: "/services" },
-  { label: "Insights", href: "/insights" },
+  // { label: "Insights", href: "/insights" }, // hidden for now
   { label: "Testimonials", href: "/testimonials" },
   { label: "FAQs", href: "/faqs" },
   { label: "Contact", href: "/contact" },
 ] as const;
 
 /**
- * Desktop header links only — deliberately short.
- * Services, Insights, Testimonials and FAQs live in the footer and the
- * mobile menu so the top bar stays uncluttered.
+ * Desktop header pill. Testimonials, FAQs and Contact live in the footer
+ * and the full screen menu so the bar stays uncluttered.
  */
 export const primaryNav = [
-  { label: "About", href: "/about" },
+  { label: "Home", href: "/" },
   { label: "Properties", href: "/properties" },
-  { label: "Neighborhoods", href: "/neighborhoods" },
+  // { label: "Neighborhoods", href: "/neighborhoods" }, // hidden for now
+  { label: "Services", href: "/services" },
+  { label: "About", href: "/about" },
+  // { label: "Insights", href: "/insights" }, // hidden for now
 ] as const;
 
 export const whatsappLink = (message = "Hello Victor, I'd like to talk about a property.") =>
