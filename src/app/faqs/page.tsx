@@ -12,7 +12,7 @@ import { faqs } from "@/data/faqs";
 import { pageMeta, JsonLd, breadcrumbSchema } from "@/lib/seo";
 
 export const metadata = pageMeta({
-  title: "Frequently Asked Questions — Buying Property in Rwanda",
+  title: "Frequently Asked Questions: Buying Property in Rwanda",
   description:
     "Answers to common questions about buying and selling property in Rwanda, foreign ownership, legal documentation, investment and property financing.",
   path: "/faqs",
@@ -35,9 +35,8 @@ export default function FaqsPage() {
   return (
     <>
       <PageHero
-        label="FAQs"
         title="Questions, Answered Plainly"
-        intro="The questions clients ask most often. If yours isn't here, ask me directly — I'd rather answer it properly than have you guess."
+        intro="The questions clients ask most often. If yours isn't here, ask me directly. I'd rather answer it properly than have you guess."
       />
 
       <section className="py-24 md:py-32">
@@ -70,7 +69,7 @@ export default function FaqsPage() {
 
       <CtaBand
         title="Still have a question?"
-        text="Ask me directly. No obligation, and no sales pressure — just a straight answer."
+        text="Ask me directly. No obligation, and no sales pressure, just a straight answer."
       />
       <JsonLd data={faqSchema} />
       <JsonLd
