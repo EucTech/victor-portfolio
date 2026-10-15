@@ -1,5 +1,5 @@
 import Link from "next/link";
-import Image from "next/image";
+import { BrandMark } from "./ui/brand-mark";
 import { Mail, Phone } from "lucide-react";
 import { InstagramIcon, LinkedInIcon, TikTokIcon, WhatsAppIcon, YoutubeIcon } from "./ui/social-icons";
 import { nav, site, whatsappLink } from "@/data/site";
@@ -33,13 +33,10 @@ export function SiteFooter() {
 
         <div className="grid gap-14 py-16 md:grid-cols-12 md:py-20">
           <div className="md:col-span-4">
-            <Image
-              src="/brand/logo-mark.png"
-              alt="Victor Chiemerie"
-              width={227}
-              height={174}
-              className="h-14 w-auto"
-            />
+            <div className="flex items-center gap-4">
+              <BrandMark title="Victor Chiemerie" className="size-14 text-white" />
+              <span className="font-display text-[1.75rem] leading-none text-white">Victor Chiemerie</span>
+            </div>
             <p className="mt-8 max-w-sm text-[0.9375rem] leading-relaxed text-white/60">
               {site.brandStatement}
             </p>
