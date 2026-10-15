@@ -5,7 +5,7 @@ import { ButtonLink } from "@/components/ui/button";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Media } from "@/components/ui/media";
 import { Reveal } from "@/components/ui/reveal";
-import { TestimonialCarousel } from "@/components/testimonial-carousel";
+// import { TestimonialCarousel } from "@/components/testimonial-carousel";
 import { CtaBand } from "@/components/cta-band";
 import { Hero } from "@/components/home/hero";
 import { ScrollStatement } from "@/components/home/scroll-statement";
@@ -15,7 +15,7 @@ import { HoverRows } from "@/components/home/hover-rows";
 import { Tilt } from "@/components/motion/tilt";
 import { Magnetic } from "@/components/motion/magnetic";
 import { featuredProperties, properties } from "@/data/properties";
-import { testimonials } from "@/data/testimonials";
+// import { testimonials } from "@/data/testimonials";
 // import { recentInsights } from "@/data/insights";
 import { differentiators, services } from "@/data/services";
 import { neighborhoods } from "@/data/neighborhoods";
@@ -262,7 +262,9 @@ export default function HomePage() {
       </section>
       */}
 
-      {/* Testimonials */}
+      {/* Testimonials section, hidden until Victor has real client quotes.
+          To restore: uncomment this and its two imports, and rename
+          src/app/_testimonials back to testimonials.
       <section className="bg-stone py-28 md:py-40">
         <Container size="wide">
           <SectionHeading title="What clients say" align="center" />
@@ -271,6 +273,7 @@ export default function HomePage() {
           </Reveal>
         </Container>
       </section>
+      */}
 
       {/* Insights section, hidden for now. To restore: uncomment this and its
           imports, and rename src/app/_insights back to insights.
