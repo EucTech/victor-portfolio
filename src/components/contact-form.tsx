@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { Check, Copy, Mail } from "lucide-react";
+import { site } from "@/data/site";
 import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 
@@ -13,7 +15,7 @@ const interests = [
 ];
 
 const fieldClass =
-  "h-12 w-full border border-line bg-white px-4 text-[0.9375rem] text-ink placeholder:text-muted/70 transition-colors focus:border-ink focus:outline-none";
+  "h-13 w-full rounded-2xl border border-line bg-white px-5 text-[0.9375rem] text-ink placeholder:text-muted/70 transition-colors hover:border-ink/30 focus:border-ink focus:outline-none";
 
 export function ContactForm({
   className,
@@ -22,32 +24,95 @@ export function ContactForm({
   className?: string;
   propertyName?: string;
 }) {
-  const [state, setState] = useState<"idle" | "sending" | "done" | "error">("idle");
+  // The form opens the visitor's own email app with everything filled in,
+  // addressed to Victor. No email service or server is involved.
+  const [mailto, setMailto] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
-  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+  function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    setState("sending");
-    const data = Object.fromEntries(new FormData(e.currentTarget));
+    const data = new FormData(e.currentTarget);
+    const get = (key: string) => String(data.get(key) ?? "").trim();
+
+    const subject = propertyName
+      ? `Enquiry about ${propertyName}`
+      : `Website enquiry${get("interest") ? `: ${get("interest")}` : ""}`;
+
+    const body = [
+      `Hello Victor,`,
+      ``,
+      get("message") || "I'd like to talk to you about a property.",
+      ``,
+      `Name: ${get("name")}`,
+      `Email: ${get("email")}`,
+      get("phone") ? `Phone: ${get("phone")}` : "",
+      get("interest") ? `Interested in: ${get("interest")}` : "",
+      propertyName ? `Property: ${propertyName}` : "",
+    ]
+      .filter((line, i, all) => line !== "" || all[i - 1] !== "")
+      .join("\n")
+      .trim();
+
+    const href = `mailto:${site.email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    setMailto(href);
+    window.location.href = href;
+  }
+
+  async function copyEmail() {
     try {
-      const res = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) throw new Error("Request failed");
-      setState("done");
+      await navigator.clipboard.writeText(site.email);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     } catch {
-      setState("error");
+      // Clipboard can be blocked; the address is visible to copy by hand.
     }
   }
 
-  if (state === "done") {
+  if (mailto) {
     return (
-      <div className={cn("border border-line bg-cream p-10 text-center", className)}>
-        <p className="font-display text-2xl text-ink">Thank you for reaching out.</p>
-        <p className="mt-3 text-[0.9375rem] text-muted">
-          I&apos;ll be in touch shortly. For anything urgent, WhatsApp is fastest.
+      <div className={cn("rounded-[1.75rem] bg-stone p-8 md:p-10", className)}>
+        <p className="font-display text-[1.75rem] leading-tight text-ink">
+          Your email is ready to send
         </p>
+        <p className="mt-3 text-[0.9375rem] leading-relaxed text-muted">
+          Your email app should have opened with your message to Victor. Press send
+          there and he&apos;ll reply within one business day.
+        </p>
+        <div className="mt-6 flex flex-wrap items-center gap-3">
+          <a
+            href={mailto}
+            className="inline-flex items-center gap-2 rounded-full bg-ink px-5 py-3 text-[0.8125rem] text-white transition-colors hover:bg-ink-soft"
+          >
+            <Mail className="size-4" strokeWidth={1.5} />
+            Open it again
+          </a>
+          <button
+            type="button"
+            onClick={copyEmail}
+            className="inline-flex items-center gap-2 rounded-full border border-ink/15 px-5 py-3 text-[0.8125rem] text-ink transition-colors hover:border-ink"
+          >
+            {copied ? (
+              <Check className="size-4" strokeWidth={1.5} />
+            ) : (
+              <Copy className="size-4" strokeWidth={1.5} />
+            )}
+            {copied ? "Copied" : "Copy email address"}
+          </button>
+        </div>
+        <p className="mt-5 text-[0.8125rem] text-muted">
+          Nothing opened? Write to{" "}
+          <a href={`mailto:${site.email}`} className="text-ink underline underline-offset-4">
+            {site.email}
+          </a>{" "}
+          from any email account.
+        </p>
+        <button
+          type="button"
+          onClick={() => setMailto(null)}
+          className="mt-6 text-[0.8125rem] text-ink underline underline-offset-4"
+        >
+          Back to the form
+        </button>
       </div>
     );
   }
@@ -130,7 +195,7 @@ export function ContactForm({
           name="message"
           rows={5}
           placeholder="How can I help?"
-          className="w-full border border-line bg-white px-4 py-3.5 text-[0.9375rem] text-ink placeholder:text-muted/70 transition-colors focus:border-ink focus:outline-none"
+          className="w-full rounded-2xl border border-line bg-white px-5 py-4 text-[0.9375rem] text-ink placeholder:text-muted/70 transition-colors focus:border-ink focus:outline-none"
         />
       </div>
 
@@ -147,14 +212,10 @@ export function ContactForm({
         </span>
       </label>
 
-      {state === "error" ? (
-        <p className="text-sm text-red-600">
-          Something went wrong. Please try again, or reach me directly on WhatsApp.
-        </p>
-      ) : null}
 
-      <Button type="submit" disabled={state === "sending"} className="w-full sm:w-auto">
-        {state === "sending" ? "Sending…" : "Send Message"}
+      <Button type="submit" className="w-full sm:w-auto">
+        <Mail className="size-4" strokeWidth={1.5} />
+        Send by email
       </Button>
     </form>
   );
