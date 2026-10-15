@@ -38,7 +38,7 @@ export const insights: Insight[] = [
     readMinutes: 6,
     image: "",
     body: [
-      "DRAFT — Replace with Victor's own article.",
+      "DRAFT: Replace with Victor's own article.",
       "## Start with the title, not the tiles",
       "The single most common mistake is falling for a property before verifying who legally owns it. A registry search confirms the registered owner, the plot boundaries and whether anything is registered against the property. This costs very little and prevents the expensive problems.",
       "## Understand what the plot actually is",
@@ -59,7 +59,7 @@ export const insights: Insight[] = [
     readMinutes: 5,
     image: "",
     body: [
-      "DRAFT — Replace with Victor's own article.",
+      "DRAFT: Replace with Victor's own article.",
       "## Attention is highest on day one",
       "Every serious buyer currently looking will see your property in its first fortnight. That attention does not come back later.",
       "## Over-pricing costs more than it gains",
@@ -78,9 +78,9 @@ export const insights: Insight[] = [
     readMinutes: 7,
     image: "",
     body: [
-      "DRAFT — Replace with Victor's own article, and verify any figures before publishing.",
+      "DRAFT: Replace with Victor's own article, and verify any figures before publishing.",
       "## The case investors make",
-      "Kigali is frequently cited for security, cleanliness and predictable governance — qualities that matter to anyone holding an illiquid asset for a decade.",
+      "Kigali is frequently cited for security, cleanliness and predictable governance, qualities that matter to anyone holding an illiquid asset for a decade.",
       "## Where the demand comes from",
       "Rental demand concentrates around the diplomatic, institutional and corporate sectors, which is why location matters more than finish quality for income properties.",
       "## The honest risks",
