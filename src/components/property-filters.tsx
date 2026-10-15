@@ -1,183 +1,167 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { SlidersHorizontal, X } from "lucide-react";
+import { AnimatePresence, LayoutGroup, motion } from "motion/react";
 import { properties, propertyFilters } from "@/data/properties";
 import { PropertyCard } from "./property-card";
 import { cn } from "@/lib/utils";
 
 const bedroomOptions = ["Any", "1+", "2+", "3+", "4+", "5+"];
-const priceOptions = [
-  { label: "Any price", min: 0, max: Infinity },
-  { label: "Under $150,000", min: 0, max: 150000 },
-  { label: "$150,000 – $300,000", min: 150000, max: 300000 },
-  { label: "$300,000 – $500,000", min: 300000, max: 500000 },
-  { label: "$500,000+", min: 500000, max: Infinity },
-];
-
-const selectClass =
-  "h-12 w-full appearance-none border border-line bg-white px-4 pr-9 text-[0.875rem] text-ink transition-colors focus:border-ink focus:outline-none";
 
 export function PropertyFilters() {
+  const [status, setStatus] = useState("Any");
   const [location, setLocation] = useState("Any");
   const [type, setType] = useState("Any");
-  const [status, setStatus] = useState("Any");
   const [beds, setBeds] = useState("Any");
-  const [price, setPrice] = useState(0);
 
   const results = useMemo(() => {
-    const band = priceOptions[price];
     const minBeds = beds === "Any" ? 0 : parseInt(beds);
     return properties.filter(
       (p) =>
+        (status === "Any" || p.status === status) &&
         (location === "Any" || p.location === location) &&
         (type === "Any" || p.type === type) &&
-        (status === "Any" || p.status === status) &&
-        p.bedrooms >= minBeds &&
-        p.price >= band.min &&
-        p.price <= band.max,
+        (minBeds === 0 || p.bedrooms >= minBeds),
     );
-  }, [location, type, status, beds, price]);
+  }, [status, location, type, beds]);
 
-  const active =
-    location !== "Any" || type !== "Any" || status !== "Any" || beds !== "Any" || price !== 0;
+  const active = status !== "Any" || location !== "Any" || type !== "Any" || beds !== "Any";
 
   function reset() {
+    setStatus("Any");
     setLocation("Any");
     setType("Any");
-    setStatus("Any");
     setBeds("Any");
-    setPrice(0);
   }
 
   return (
     <div>
-      <div className="border border-line bg-cream p-6 md:p-8">
-        <div className="mb-5 flex items-center justify-between">
-          <p className="flex items-center gap-2 text-[0.6875rem] uppercase tracking-[0.18em] text-gold-deep">
-            <SlidersHorizontal className="size-3.5" strokeWidth={1.5} />
-            Refine
-          </p>
-          {active ? (
-            <button
-              onClick={reset}
-              className="flex items-center gap-1.5 text-[0.75rem] text-muted transition-colors hover:text-ink"
-            >
-              <X className="size-3" strokeWidth={1.5} />
-              Clear all
-            </button>
-          ) : null}
-        </div>
-
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-          <Field label="Location">
-            <select
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className={selectClass}
-              aria-label="Filter by location"
-            >
-              <option>Any</option>
-              {propertyFilters.locations.map((l) => (
-                <option key={l}>{l}</option>
-              ))}
-            </select>
-          </Field>
-
-          <Field label="Property type">
-            <select
-              value={type}
-              onChange={(e) => setType(e.target.value)}
-              className={selectClass}
-              aria-label="Filter by property type"
-            >
-              <option>Any</option>
-              {propertyFilters.types.map((t) => (
-                <option key={t}>{t}</option>
-              ))}
-            </select>
-          </Field>
-
-          <Field label="Bedrooms">
-            <select
-              value={beds}
-              onChange={(e) => setBeds(e.target.value)}
-              className={selectClass}
-              aria-label="Filter by bedrooms"
-            >
-              {bedroomOptions.map((b) => (
-                <option key={b}>{b}</option>
-              ))}
-            </select>
-          </Field>
-
-          <Field label="Price">
-            <select
-              value={price}
-              onChange={(e) => setPrice(Number(e.target.value))}
-              className={selectClass}
-              aria-label="Filter by price"
-            >
-              {priceOptions.map((o, i) => (
-                <option key={o.label} value={i}>
-                  {o.label}
-                </option>
-              ))}
-            </select>
-          </Field>
-
-          <Field label="Status">
-            <select
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-              className={selectClass}
-              aria-label="Filter by status"
-            >
-              <option>Any</option>
-              {propertyFilters.statuses.map((s) => (
-                <option key={s}>{s}</option>
-              ))}
-            </select>
-          </Field>
+      <div className="flex flex-col gap-6 rounded-[1.75rem] border border-line bg-white p-5 md:p-7">
+        <PillGroup
+          id="status"
+          label="Looking to"
+          value={status}
+          onChange={setStatus}
+          options={["Any", ...propertyFilters.statuses]}
+          display={(o) => (o === "Any" ? "Everything" : o)}
+        />
+        <div className="grid gap-6 lg:grid-cols-3">
+          <PillGroup
+            id="location"
+            label="Neighborhood"
+            value={location}
+            onChange={setLocation}
+            options={["Any", ...propertyFilters.locations]}
+          />
+          <PillGroup
+            id="type"
+            label="Type"
+            value={type}
+            onChange={setType}
+            options={["Any", ...propertyFilters.types]}
+          />
+          <PillGroup id="beds" label="Bedrooms" value={beds} onChange={setBeds} options={bedroomOptions} />
         </div>
       </div>
 
-      <p className="mt-8 text-[0.8125rem] text-muted" aria-live="polite">
-        Showing {results.length} {results.length === 1 ? "property" : "properties"}
-      </p>
+      <div className="mt-8 flex items-center justify-between">
+        <p className="text-[0.8125rem] text-muted" aria-live="polite">
+          Showing <span className="text-ink">{results.length}</span>{" "}
+          {results.length === 1 ? "property" : "properties"}
+        </p>
+        {active ? (
+          <button
+            onClick={reset}
+            className="text-[0.75rem] uppercase tracking-[0.16em] text-ink underline underline-offset-4"
+          >
+            Clear filters
+          </button>
+        ) : null}
+      </div>
 
-      {results.length ? (
-        <div className="mt-8 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-          {results.map((p) => (
-            <PropertyCard key={p.slug} property={p} />
-          ))}
-        </div>
-      ) : (
-        <div className="mt-8 border border-line px-6 py-20 text-center">
-          <p className="font-display text-2xl text-ink">No properties match those filters</p>
+      <LayoutGroup>
+        <motion.div layout className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <AnimatePresence mode="popLayout">
+            {results.map((p) => (
+              <motion.div
+                key={p.slug}
+                layout
+                initial={{ opacity: 0, scale: 0.94, y: 20 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.94 }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <PropertyCard property={p} />
+              </motion.div>
+            ))}
+          </AnimatePresence>
+        </motion.div>
+      </LayoutGroup>
+
+      {results.length === 0 ? (
+        <div className="mt-8 rounded-[1.75rem] border border-line px-6 py-20 text-center">
+          <p className="font-display text-[2rem] text-ink">No properties match those filters</p>
           <p className="mx-auto mt-3 max-w-md text-[0.9375rem] text-muted">
-            Try widening your search. I also have listings that never reach the
-            website — tell me what you&apos;re looking for and I&apos;ll send options.
+            Try widening your search. I also have listings that never reach the website.
+            Tell me what you&apos;re looking for and I&apos;ll send options.
           </p>
           <button
             onClick={reset}
-            className="mt-6 text-[0.75rem] uppercase tracking-[0.16em] text-gold-deep underline underline-offset-4"
+            className="mt-6 rounded-full bg-ink px-6 py-3 text-[0.75rem] uppercase tracking-[0.16em] text-white"
           >
             Clear filters
           </button>
         </div>
-      )}
+      ) : null}
     </div>
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function PillGroup({
+  id,
+  label,
+  value,
+  onChange,
+  options,
+  display = (o) => o,
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (v: string) => void;
+  options: string[];
+  display?: (o: string) => string;
+}) {
   return (
-    <label className="block">
-      <span className={cn("mb-2 block text-[0.6875rem] uppercase tracking-[0.14em] text-muted")}>
-        {label}
-      </span>
-      {children}
-    </label>
+    <div role="radiogroup" aria-label={label}>
+      <p className="mb-3 text-[0.6875rem] uppercase tracking-[0.16em] text-muted">{label}</p>
+      <div className="flex flex-wrap gap-1.5">
+        {options.map((o) => {
+          const selected = value === o;
+          return (
+            <button
+              key={o}
+              type="button"
+              role="radio"
+              aria-checked={selected}
+              onClick={() => onChange(o)}
+              className={cn(
+                "relative rounded-full border px-4 py-2 text-[0.8125rem] transition-colors duration-300",
+                selected ? "border-ink text-white" : "border-line text-ink-soft hover:border-ink/40",
+              )}
+            >
+              {selected ? (
+                <motion.span
+                  layoutId={`pill-${id}`}
+                  transition={{ type: "spring", stiffness: 400, damping: 34 }}
+                  className="absolute inset-0 rounded-full bg-ink"
+                />
+              ) : null}
+              <span className="relative">{display(o)}</span>
+            </button>
+          );
+        })}
+      </div>
+    </div>
   );
 }
