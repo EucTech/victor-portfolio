@@ -5,6 +5,9 @@ import { SiteFooter } from "@/components/site-footer";
 import { WhatsAppButton } from "@/components/whatsapp-button";
 import { JsonLd, realEstateAgentSchema } from "@/lib/seo";
 import { site } from "@/data/site";
+import { SmoothScroll } from "@/components/motion/smooth-scroll";
+import { Cursor } from "@/components/motion/cursor";
+import { IntroCurtain, introSkipScript } from "@/components/motion/intro-curtain";
 import "./globals.css";
 
 const cormorant = Cormorant_Garamond({
@@ -58,8 +61,16 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${cormorant.variable} ${inter.variable}`}>
+    <html
+      lang="en"
+      className={`${cormorant.variable} ${inter.variable}`}
+      suppressHydrationWarning
+    >
       <body className="antialiased">
+        <script dangerouslySetInnerHTML={{ __html: introSkipScript }} />
+        <IntroCurtain />
+        <SmoothScroll />
+        <Cursor />
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[60] focus:bg-ink focus:px-4 focus:py-2 focus:text-sm focus:text-white"
