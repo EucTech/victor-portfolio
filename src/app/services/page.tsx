@@ -9,7 +9,7 @@ import { pageMeta, JsonLd, breadcrumbSchema } from "@/lib/seo";
 import { site } from "@/data/site";
 
 export const metadata = pageMeta({
-  title: "Services — Buying, Selling & Investment Guidance in Kigali",
+  title: "Services: Buying, Selling & Investment Guidance in Kigali",
   description:
     "Buying, selling and property investment guidance in Kigali, Rwanda. Professional representation from first conversation through to closing and beyond.",
   path: "/services",
@@ -35,9 +35,8 @@ export default function ServicesPage() {
   return (
     <>
       <PageHero
-        label="Services"
         title="How I Can Help"
-        intro="Three areas of focus, each built on the same principle — clear advice, given honestly, in your interest."
+        intro="Three areas of focus, each built on the same principle: clear advice, given honestly, in your interest."
       />
 
       <section className="py-24 md:py-32">
@@ -58,13 +57,9 @@ export default function ServicesPage() {
                     sizes="(max-width: 1024px) 100vw, 50vw"
                   />
                   <div>
-                    <p className="label mb-4">
-                      0{i + 1} — Service
-                    </p>
                     <h2 className="font-display text-[2rem] leading-tight text-ink md:text-[2.5rem]">
                       {s.title}
                     </h2>
-                    <div className="mt-6 h-px w-12 bg-gold" />
                     <p className="mt-7 text-[0.9375rem] leading-relaxed text-ink-soft">
                       {s.summary}
                     </p>
