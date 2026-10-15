@@ -31,7 +31,7 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
               key={i}
               className="min-w-0 shrink-0 grow-0 basis-full pr-6 md:basis-1/2 lg:basis-1/3"
             >
-              <figure className="flex h-full flex-col border border-line bg-white p-8">
+              <figure className="flex h-full flex-col rounded-[1.5rem] border border-line bg-white p-8 transition-all duration-500 hover:-translate-y-1 hover:border-ink/20 hover:shadow-[0_24px_50px_rgba(10,10,10,0.07)] md:p-10">
                 <Quote className="size-6 shrink-0 text-gold" strokeWidth={1.25} />
                 <blockquote className="mt-6 flex-1 text-[0.9375rem] leading-relaxed text-ink-soft">
                   {t.quote}
@@ -58,8 +58,8 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
               onClick={() => embla?.scrollTo(i)}
               aria-label={`Go to testimonial ${i + 1}`}
               className={cn(
-                "h-px w-8 transition-colors",
-                i === selected ? "bg-ink" : "bg-line",
+                "h-[3px] rounded-full transition-all duration-500",
+                i === selected ? "w-10 bg-ink" : "w-4 bg-line",
               )}
             />
           ))}
@@ -68,14 +68,14 @@ export function TestimonialCarousel({ items }: { items: Testimonial[] }) {
           <button
             onClick={() => embla?.scrollPrev()}
             aria-label="Previous testimonial"
-            className="flex size-11 items-center justify-center border border-line text-ink transition-colors hover:border-ink hover:bg-ink hover:text-white"
+            className="flex size-12 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-ink hover:bg-ink hover:text-white"
           >
             <ArrowLeft className="size-4" strokeWidth={1.5} />
           </button>
           <button
             onClick={() => embla?.scrollNext()}
             aria-label="Next testimonial"
-            className="flex size-11 items-center justify-center border border-line text-ink transition-colors hover:border-ink hover:bg-ink hover:text-white"
+            className="flex size-12 items-center justify-center rounded-full border border-line text-ink transition-colors hover:border-ink hover:bg-ink hover:text-white"
           >
             <ArrowRight className="size-4" strokeWidth={1.5} />
           </button>
