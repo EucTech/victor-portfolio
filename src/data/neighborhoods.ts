@@ -22,11 +22,11 @@ export const neighborhoods: Neighborhood[] = [
     name: "Nyarutarama",
     tagline: "Kigali's established address",
     intro: [
-      "DRAFT — Nyarutarama is where much of Kigali's diplomatic and senior professional community lives. Wide streets, mature gardens and proximity to the golf course have kept it desirable for two decades.",
+      "DRAFT: Nyarutarama is where much of Kigali's diplomatic and senior professional community lives. Wide streets, mature gardens and proximity to the golf course have kept it desirable for two decades.",
       "Housing is dominated by four- and five-bedroom family homes on generous plots, with a steady rental market driven by embassies and international organisations.",
     ],
     bestFor: ["Families", "Diplomatic tenants", "Long-term capital preservation"],
-    priceGuide: "DRAFT — Family homes typically from $450,000; rentals from $2,000/month.",
+    priceGuide: "DRAFT: Family homes typically from $450,000; rentals from $2,000/month.",
     image: "",
   },
   {
@@ -34,11 +34,11 @@ export const neighborhoods: Neighborhood[] = [
     name: "Kacyiru",
     tagline: "Walk to work",
     intro: [
-      "DRAFT — Kacyiru holds much of the government and institutional sector, which makes it one of the few Kigali neighborhoods where people genuinely walk to work.",
+      "DRAFT: Kacyiru holds much of the government and institutional sector, which makes it one of the few Kigali neighborhoods where people genuinely walk to work.",
       "Apartment stock has grown considerably, appealing to professionals who want to avoid a commute and investors targeting corporate tenants.",
     ],
     bestFor: ["Professionals", "Apartment investors", "Short-let income"],
-    priceGuide: "DRAFT — Apartments typically from $200,000; rentals from $1,200/month.",
+    priceGuide: "DRAFT: Apartments typically from $200,000; rentals from $1,200/month.",
     image: "",
   },
   {
@@ -46,11 +46,11 @@ export const neighborhoods: Neighborhood[] = [
     name: "Kibagabaga",
     tagline: "Settled and practical",
     intro: [
-      "DRAFT — Kibagabaga offers more house for the money than the premium neighborhoods, without feeling remote. It is a settled residential area with established neighbors and good local amenities.",
+      "DRAFT: Kibagabaga offers more house for the money than the premium neighborhoods, without feeling remote. It is a settled residential area with established neighbors and good local amenities.",
       "Popular with Rwandan families and first-time buyers who want a garden and space to grow.",
     ],
     bestFor: ["First-time buyers", "Growing families", "Value per square metre"],
-    priceGuide: "DRAFT — Family homes typically from $250,000.",
+    priceGuide: "DRAFT: Family homes typically from $250,000.",
     image: "",
   },
   {
@@ -58,11 +58,11 @@ export const neighborhoods: Neighborhood[] = [
     name: "Gacuriro",
     tagline: "Estate living",
     intro: [
-      "DRAFT — Gacuriro is defined by planned estates with shared amenities — security, maintenance, pools and play areas — which suits relocating families who want to arrive and settle quickly.",
+      "DRAFT: Gacuriro is defined by planned estates with shared amenities (security, maintenance, pools and play areas), which suits relocating families who want to arrive and settle quickly.",
       "The estate model also appeals to owners who want a property that is straightforward to let and maintain.",
     ],
     bestFor: ["Relocating families", "Furnished rentals", "Low-maintenance ownership"],
-    priceGuide: "DRAFT — Townhouses typically from $220,000; rentals from $1,500/month.",
+    priceGuide: "DRAFT: Townhouses typically from $220,000; rentals from $1,500/month.",
     image: "",
   },
 ];
