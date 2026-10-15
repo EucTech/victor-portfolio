@@ -88,7 +88,7 @@ export function Hero({ photos, listings }: { photos: RingPhoto[]; listings: Prop
       <motion.div
         style={reduce ? undefined : { y: ringY, scale: ringScale }}
         data-cursor={hover ? "View" : undefined}
-        className="relative h-[44vh] min-h-[300px] w-full cursor-grab active:cursor-grabbing md:absolute md:inset-x-0 md:bottom-0 md:top-[16%] md:h-auto"
+        className="relative -mt-6 h-[42vh] min-h-[290px] w-full cursor-grab active:cursor-grabbing md:absolute md:inset-x-0 md:bottom-0 md:top-[16%] md:h-auto"
       >
         <HeroRing photos={photos} onHover={setHover} active={onScreen} />
         <AnimatePresence>
@@ -98,7 +98,7 @@ export function Hero({ photos, listings }: { photos: RingPhoto[]; listings: Prop
               initial={{ opacity: 0, y: 8 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0 }}
-              className="pointer-events-none absolute bottom-4 left-1/2 z-20 md:bottom-[14%] -translate-x-1/2 whitespace-nowrap rounded-full bg-ink px-4 py-2 text-[0.75rem] text-white"
+              className="pointer-events-none absolute bottom-4 left-1/2 z-20 hidden md:bottom-[14%] md:block -translate-x-1/2 whitespace-nowrap rounded-full bg-ink px-4 py-2 text-[0.75rem] text-white"
             >
               {hover.alt}
             </motion.p>
