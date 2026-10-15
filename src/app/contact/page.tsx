@@ -5,10 +5,11 @@ import { Reveal } from "@/components/ui/reveal";
 import { PageHero } from "@/components/page-hero";
 import { ContactForm } from "@/components/contact-form";
 import { site, whatsappLink } from "@/data/site";
+import { InstagramIcon, LinkedInIcon, TikTokIcon, YoutubeIcon } from "@/components/ui/social-icons";
 import { pageMeta, JsonLd, breadcrumbSchema } from "@/lib/seo";
 
 export const metadata = pageMeta({
-  title: "Contact Victor Chiemerie — Realtor in Kigali",
+  title: "Contact Victor Chiemerie, Realtor in Kigali",
   description:
     "Get in touch with Victor Chiemerie about buying, selling or investing in property in Kigali, Rwanda. Call, email or message on WhatsApp.",
   path: "/contact",
@@ -25,7 +26,6 @@ export default function ContactPage() {
   return (
     <>
       <PageHero
-        label="Contact"
         title="Let's Talk"
         intro="Tell me what you're trying to do. I'll tell you honestly whether I can help and what I'd suggest."
       />
@@ -36,10 +36,11 @@ export default function ContactPage() {
             {/* Details */}
             <Reveal className="lg:col-span-5">
               <Media
-                src=""
-                alt="Victor Chiemerie"
+                src={site.portrait}
+                alt="Victor Chiemerie, realtor in Kigali"
                 label="Professional portrait"
-                className="aspect-[4/5] w-full"
+                imageClassName="object-[50%_25%]"
+                className="aspect-[4/5] w-full rounded-[2rem]"
                 sizes="(max-width: 1024px) 100vw, 40vw"
               />
 
@@ -73,6 +74,29 @@ export default function ContactPage() {
                   }
                 />
               </div>
+
+              <div className="mt-10">
+                <p className="label">Follow Victor</p>
+                <div className="mt-4 flex gap-3">
+                  {[
+                    { href: site.socials.instagram, label: "Instagram", Icon: InstagramIcon },
+                    { href: site.socials.tiktok, label: "TikTok", Icon: TikTokIcon },
+                    { href: site.socials.linkedin, label: "LinkedIn", Icon: LinkedInIcon },
+                    { href: site.socials.youtube, label: "YouTube", Icon: YoutubeIcon },
+                  ].map(({ href, label, Icon }) => (
+                    <a
+                      key={label}
+                      href={href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={`Victor on ${label}`}
+                      className="flex size-12 items-center justify-center rounded-full border border-line text-ink transition-colors duration-300 hover:border-ink hover:bg-ink hover:text-white"
+                    >
+                      <Icon className="size-4" />
+                    </a>
+                  ))}
+                </div>
+              </div>
             </Reveal>
 
             {/* Form */}
@@ -80,7 +104,6 @@ export default function ContactPage() {
               <h2 className="font-display text-[2rem] leading-tight text-ink md:text-[2.5rem]">
                 Send a message
               </h2>
-              <div className="mt-5 h-px w-12 bg-gold" />
               <p className="mt-6 text-[0.9375rem] leading-relaxed text-muted">
                 I read every message personally and reply within one business day.
                 For anything urgent, WhatsApp is fastest.
