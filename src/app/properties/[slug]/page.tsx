@@ -9,6 +9,7 @@ import {
   Check,
   Download,
   CalendarDays,
+  Home,
 } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { Media } from "@/components/ui/media";
@@ -16,6 +17,9 @@ import { Reveal } from "@/components/ui/reveal";
 import { ButtonLink } from "@/components/ui/button";
 import { ContactForm } from "@/components/contact-form";
 import { PropertyCard } from "@/components/property-card";
+import { PropertyGallery } from "@/components/property-gallery";
+import { SplitText } from "@/components/motion/split-text";
+import { Magnetic } from "@/components/motion/magnetic";
 import { properties, getProperty } from "@/data/properties";
 import { site, whatsappLink } from "@/data/site";
 import { formatPrice } from "@/lib/utils";
@@ -35,10 +39,12 @@ export async function generateMetadata({
   if (!p) return pageMeta({ title: "Property not found", description: "" });
 
   return pageMeta({
-    title: `${p.name}, ${p.location} — ${formatPrice(p.price, p.currency)}`,
+    title: `${p.name}, ${p.location} | ${formatPrice(p.price, p.currency)}${
+      p.priceQualifier === "per month" ? " per month" : ""
+    }`,
     description: p.shortDescription,
     path: `/properties/${p.slug}`,
-    image: p.images[0],
+    image: p.images[0]?.src,
   });
 }
 
@@ -62,15 +68,13 @@ export default async function PropertyPage({
     name: p.name,
     description: p.shortDescription,
     url: `${site.url}/properties/${p.slug}`,
-    datePosted: new Date().toISOString().slice(0, 10),
+    image: p.images.map((img) => `${site.url}${img.src}`),
     offers: {
       "@type": "Offer",
       price: p.price,
       priceCurrency: p.currency,
       availability:
-        p.status === "Sold"
-          ? "https://schema.org/SoldOut"
-          : "https://schema.org/InStock",
+        p.status === "Sold" ? "https://schema.org/SoldOut" : "https://schema.org/InStock",
     },
     address: {
       "@type": "PostalAddress",
@@ -84,95 +88,100 @@ export default async function PropertyPage({
       : undefined,
   };
 
-  const gallery = p.images.length ? p.images : ["", "", ""];
+  const stats = [
+    { icon: Home, label: "Type", value: p.type },
+    p.bedrooms > 0 ? { icon: BedDouble, label: "Bedrooms", value: p.bedrooms } : null,
+    p.bathrooms > 0 ? { icon: Bath, label: "Bathrooms", value: p.bathrooms } : null,
+    p.sizeSqm ? { icon: Maximize, label: "Built area", value: `${p.sizeSqm} m²` } : null,
+    p.plotSqm ? { icon: Maximize, label: "Plot", value: `${p.plotSqm} m²` } : null,
+  ].filter((s) => s !== null);
 
   return (
     <>
-      {/* Gallery */}
-      <section className="pt-24 md:pt-28">
+      {/* Title + gallery */}
+      <section className="pt-28 md:pt-32">
         <Container size="wide">
           <Link
             href="/properties"
-            className="inline-flex items-center gap-2 py-6 text-[0.75rem] uppercase tracking-[0.16em] text-muted transition-colors hover:text-ink"
+            className="group inline-flex items-center gap-2 py-4 text-[0.75rem] uppercase tracking-[0.16em] text-muted transition-colors hover:text-ink"
           >
-            <ArrowLeft className="size-3.5" strokeWidth={1.5} />
+            <ArrowLeft className="size-3.5 transition-transform group-hover:-translate-x-1" strokeWidth={1.5} />
             All properties
           </Link>
 
-          <div className="grid gap-2 md:grid-cols-3">
-            <Media
-              src={gallery[0]}
-              alt={p.name}
-              label="Main photo"
-              priority
-              className="aspect-[16/10] w-full md:col-span-2 md:row-span-2"
-              sizes="(max-width: 768px) 100vw, 66vw"
-            />
-            <Media
-              src={gallery[1]}
-              alt={`${p.name} — additional view`}
-              label="Photo"
-              className="hidden aspect-[4/3] w-full md:block"
-              sizes="33vw"
-            />
-            <Media
-              src={gallery[2]}
-              alt={`${p.name} — additional view`}
-              label="Photo"
-              className="hidden aspect-[4/3] w-full md:block"
-              sizes="33vw"
-            />
+          <div className="mb-8 mt-4 flex flex-col gap-6 md:mb-10 md:flex-row md:items-end md:justify-between">
+            <div>
+              <Reveal y={12}>
+                <p className="flex flex-wrap items-center gap-3">
+                  <span className="rounded-full bg-ink px-3.5 py-1.5 text-[0.625rem] uppercase tracking-[0.16em] text-white">
+                    {p.status}
+                  </span>
+                  <span className="flex items-center gap-1.5 text-[0.875rem] text-muted">
+                    <MapPin className="size-4 text-gold-deep" strokeWidth={1.5} />
+                    {p.location}, {p.city}
+                  </span>
+                </p>
+              </Reveal>
+              <SplitText
+                as="h1"
+                text={p.name}
+                onView={false}
+                delay={0.1}
+                className="mt-5 font-display text-[2.5rem] leading-[1] tracking-[-0.01em] text-ink sm:text-[3.25rem] md:text-[4.5rem]"
+              />
+            </div>
+            <Reveal delay={300} className="md:text-right">
+              <p className="text-[0.6875rem] uppercase tracking-[0.16em] text-muted">
+                {p.priceQualifier ?? "Asking price"}
+              </p>
+              <p className="mt-1 font-display text-[2.5rem] leading-none text-ink md:text-[3.25rem]">
+                {formatPrice(p.price, p.currency)}
+              </p>
+            </Reveal>
           </div>
+
+          <PropertyGallery images={p.images} name={p.name} />
         </Container>
       </section>
 
       {/* Detail */}
-      <section className="py-16 md:py-24">
+      <section className="py-20 md:py-28">
         <Container size="wide">
           <div className="grid gap-14 lg:grid-cols-12 lg:gap-20">
             <div className="lg:col-span-7">
               <Reveal>
-                <span className="inline-block border border-line px-3 py-1.5 text-[0.625rem] uppercase tracking-[0.16em] text-gold-deep">
-                  {p.status} · {p.type}
-                </span>
-                <h1 className="mt-6 font-display text-[1.875rem] leading-[1.12] text-ink sm:text-[2.25rem] md:text-[3rem]">
-                  {p.name}
-                </h1>
-                <p className="mt-3 flex items-center gap-2 text-[0.9375rem] text-muted">
-                  <MapPin className="size-4 text-gold-deep" strokeWidth={1.5} />
-                  {p.location}, {p.city}
-                </p>
-
-                <div className="mt-8 flex flex-wrap items-center gap-x-10 gap-y-4 border-y border-line py-6">
-                  {p.bedrooms > 0 ? (
-                    <Stat icon={<BedDouble className="size-4" strokeWidth={1.5} />} label="Bedrooms" value={p.bedrooms} />
-                  ) : null}
-                  {p.bathrooms > 0 ? (
-                    <Stat icon={<Bath className="size-4" strokeWidth={1.5} />} label="Bathrooms" value={p.bathrooms} />
-                  ) : null}
-                  {p.sizeSqm ? (
-                    <Stat icon={<Maximize className="size-4" strokeWidth={1.5} />} label="Built area" value={`${p.sizeSqm} m²`} />
-                  ) : null}
-                  {p.plotSqm ? (
-                    <Stat icon={<Maximize className="size-4" strokeWidth={1.5} />} label="Plot" value={`${p.plotSqm} m²`} />
-                  ) : null}
+                <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                  {stats.map((s) => (
+                    <div key={s.label} className="rounded-[1.25rem] border border-line p-5">
+                      <s.icon className="size-5 text-gold-deep" strokeWidth={1.25} />
+                      <p className="mt-4 text-[0.6875rem] uppercase tracking-[0.14em] text-muted">
+                        {s.label}
+                      </p>
+                      <p className="mt-1 font-display text-[1.5rem] leading-none text-ink">{s.value}</p>
+                    </div>
+                  ))}
                 </div>
               </Reveal>
 
-              <Reveal delay={80} className="mt-12">
-                <h2 className="font-display text-2xl text-ink">About this property</h2>
-                <div className="mt-5 space-y-4 text-[0.9375rem] leading-relaxed text-muted">
+              <Reveal delay={80} className="mt-16">
+                <p className="font-display text-[1.75rem] italic leading-snug text-ink md:text-[2.25rem]">
+                  {p.headline}
+                </p>
+                <div className="mt-8 space-y-5 text-[1rem] leading-relaxed text-muted">
                   {p.description.map((para, i) => (
                     <p key={i}>{para}</p>
                   ))}
                 </div>
               </Reveal>
 
-              <Reveal delay={100} className="mt-12">
-                <h2 className="font-display text-2xl text-ink">Features & amenities</h2>
-                <ul className="mt-6 grid gap-x-8 gap-y-3 sm:grid-cols-2">
+              <Reveal delay={100} className="mt-16">
+                <h2 className="font-display text-[2rem] text-ink">Features</h2>
+                <ul className="mt-6 grid gap-x-8 sm:grid-cols-2">
                   {p.features.map((f) => (
-                    <li key={f} className="flex items-start gap-3 text-[0.9375rem] text-muted">
+                    <li
+                      key={f}
+                      className="flex items-start gap-3 border-b border-line py-4 text-[0.9375rem] text-ink-soft"
+                    >
                       <Check className="mt-0.5 size-4 shrink-0 text-gold-deep" strokeWidth={1.5} />
                       {f}
                     </li>
@@ -181,23 +190,23 @@ export default async function PropertyPage({
               </Reveal>
 
               {p.videoUrl ? (
-                <Reveal delay={110} className="mt-12">
-                  <h2 className="font-display text-2xl text-ink">Video walkthrough</h2>
-                  <div className="mt-6 aspect-video w-full">
+                <Reveal delay={110} className="mt-16">
+                  <h2 className="font-display text-[2rem] text-ink">Video walkthrough</h2>
+                  <div className="mt-6 aspect-video w-full overflow-hidden rounded-[1.5rem]">
                     <iframe
                       src={p.videoUrl}
                       title={`${p.name} video walkthrough`}
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
-                      className="size-full border border-line"
+                      className="size-full"
                     />
                   </div>
                 </Reveal>
               ) : null}
 
               {p.floorPlans?.length ? (
-                <Reveal delay={115} className="mt-12">
-                  <h2 className="font-display text-2xl text-ink">Floor plans</h2>
+                <Reveal delay={115} className="mt-16">
+                  <h2 className="font-display text-[2rem] text-ink">Floor plans</h2>
                   <div className="mt-6 grid gap-4 sm:grid-cols-2">
                     {p.floorPlans.map((fp, i) => (
                       <Media
@@ -205,7 +214,7 @@ export default async function PropertyPage({
                         src={fp}
                         alt={`${p.name} floor plan ${i + 1}`}
                         label="Floor plan"
-                        className="aspect-[4/3] w-full"
+                        className="aspect-[4/3] w-full rounded-[1.25rem]"
                         sizes="50vw"
                       />
                     ))}
@@ -213,13 +222,13 @@ export default async function PropertyPage({
                 </Reveal>
               ) : null}
 
-              <Reveal delay={120} className="mt-12">
-                <h2 className="font-display text-2xl text-ink">What&apos;s nearby</h2>
-                <ul className="mt-6 space-y-3">
+              <Reveal delay={120} className="mt-16">
+                <h2 className="font-display text-[2rem] text-ink">What&apos;s nearby</h2>
+                <ul className="mt-6">
                   {p.nearby.map((n) => (
                     <li
                       key={n}
-                      className="flex items-start gap-3 border-b border-line pb-3 text-[0.9375rem] text-muted last:border-0"
+                      className="flex items-start gap-3 border-b border-line py-4 text-[0.9375rem] text-ink-soft"
                     >
                       <MapPin className="mt-0.5 size-4 shrink-0 text-gold-deep" strokeWidth={1.5} />
                       {n}
@@ -229,11 +238,11 @@ export default async function PropertyPage({
               </Reveal>
 
               {p.investmentHighlights?.length ? (
-                <Reveal delay={130} className="mt-12 border border-line bg-cream p-8 md:p-10">
-                  <p className="label mb-4">Investment highlights</p>
-                  <ul className="space-y-3">
+                <Reveal delay={130} className="mt-16 rounded-[1.75rem] bg-stone p-8 md:p-10">
+                  <p className="label mb-5">Investment highlights</p>
+                  <ul className="space-y-4">
                     {p.investmentHighlights.map((h) => (
-                      <li key={h} className="flex items-start gap-3 text-[0.9375rem] text-ink-soft">
+                      <li key={h} className="flex items-start gap-3 text-[0.9875rem] text-ink-soft">
                         <Check className="mt-0.5 size-4 shrink-0 text-gold-deep" strokeWidth={1.5} />
                         {h}
                       </li>
@@ -245,44 +254,45 @@ export default async function PropertyPage({
 
             {/* Sticky enquiry rail */}
             <aside className="lg:col-span-5">
-              <div className="lg:sticky lg:top-32">
-                <div className="border border-line p-8">
-                  <p className="text-[0.6875rem] uppercase tracking-[0.16em] text-muted">
-                    {p.priceQualifier ?? "Price"}
+              <div className="lg:sticky lg:top-28">
+                <div className="rounded-[1.75rem] bg-ink p-8 text-white">
+                  <p className="text-[0.6875rem] uppercase tracking-[0.16em] text-white/50">
+                    {p.priceQualifier ?? "Asking price"}
                   </p>
-                  <p className="mt-2 font-display text-[2.25rem] leading-none text-ink">
+                  <p className="mt-2 font-display text-[2.75rem] leading-none">
                     {formatPrice(p.price, p.currency)}
                   </p>
-
-                  <div className="mt-7 flex flex-col gap-3">
-                    <ButtonLink
-                      href={whatsappLink(
-                        `Hello Victor, I'd like to book a viewing for ${p.name} in ${p.location}.`,
-                      )}
-                      external
-                      className="w-full"
-                    >
-                      <CalendarDays className="size-4" strokeWidth={1.5} />
-                      Book a Viewing
-                    </ButtonLink>
+                  <div className="mt-8 flex flex-col gap-3">
+                    <Magnetic strength={0.2} className="w-full">
+                      <ButtonLink
+                        href={whatsappLink(
+                          `Hello Victor, I'd like to book a viewing for ${p.name} in ${p.location}.`,
+                        )}
+                        external
+                        variant="gold"
+                        className="w-full"
+                      >
+                        <CalendarDays className="size-4" strokeWidth={1.5} />
+                        Book a Viewing
+                      </ButtonLink>
+                    </Magnetic>
                     {p.brochureUrl ? (
-                      <ButtonLink href={p.brochureUrl} external variant="outline" className="w-full">
+                      <ButtonLink href={p.brochureUrl} external variant="ghostLight" className="w-full">
                         <Download className="size-4" strokeWidth={1.5} />
                         Download Brochure
                       </ButtonLink>
                     ) : null}
                   </div>
-
-                  <p className="mt-7 border-t border-line pt-6 text-[0.8125rem] leading-relaxed text-muted">
+                  <p className="mt-7 border-t border-white/10 pt-6 text-[0.8125rem] leading-relaxed text-white/55">
                     Speak to Victor directly:{" "}
-                    <a href={`tel:${site.phone}`} className="text-ink underline underline-offset-4">
+                    <a href={`tel:${site.phone}`} className="text-white underline underline-offset-4">
                       {site.phoneDisplay}
                     </a>
                   </p>
                 </div>
 
-                <div className="mt-6 border border-line p-8">
-                  <h2 className="font-display text-xl text-ink">Enquire about this property</h2>
+                <div className="mt-4 rounded-[1.75rem] border border-line p-8">
+                  <h2 className="font-display text-[1.5rem] text-ink">Enquire about this property</h2>
                   <ContactForm propertyName={`${p.name}, ${p.location}`} className="mt-6" />
                 </div>
               </div>
@@ -291,14 +301,11 @@ export default async function PropertyPage({
         </Container>
       </section>
 
-      {/* Related */}
       {related.length ? (
-        <section className="border-t border-line bg-cream py-24">
+        <section className="bg-stone py-24 md:py-32">
           <Container size="wide">
-            <h2 className="font-display text-[1.75rem] text-ink md:text-[2.25rem]">
-              You may also like
-            </h2>
-            <div className="mt-12 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
+            <h2 className="font-display text-[2rem] text-ink md:text-[3rem]">You may also like</h2>
+            <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
               {related.map((r) => (
                 <PropertyCard key={r.slug} property={r} />
               ))}
@@ -316,25 +323,5 @@ export default async function PropertyPage({
         ])}
       />
     </>
-  );
-}
-
-function Stat({
-  icon,
-  label,
-  value,
-}: {
-  icon: React.ReactNode;
-  label: string;
-  value: string | number;
-}) {
-  return (
-    <div>
-      <p className="flex items-center gap-2 text-[0.6875rem] uppercase tracking-[0.14em] text-muted">
-        <span className="text-gold-deep">{icon}</span>
-        {label}
-      </p>
-      <p className="mt-1.5 font-display text-xl text-ink">{value}</p>
-    </div>
   );
 }
