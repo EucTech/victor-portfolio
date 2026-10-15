@@ -30,6 +30,11 @@ pnpm lint          # eslint
 - Tailwind CSS v4 — configured in CSS via `@theme`, there is no `tailwind.config.js`
 - shadcn-style components, hand-rolled in `src/components/ui`, built on Radix primitives
 - lucide-react for icons, embla-carousel-react for the testimonial carousel
+- motion (`motion/react`) for all animation, lenis for smooth scrolling
+- three + @react-three/fiber for the 3D photo ring in the home hero
+  (`src/components/home/hero-ring.tsx`, loaded client-side only and paused off screen)
+- Shared motion primitives live in `src/components/motion/` (SplitText, Magnetic, Tilt,
+  ParallaxImage, Cursor, SmoothScroll, IntroCurtain). Every one respects reduced motion.
 
 ## Architecture
 
@@ -81,7 +86,10 @@ Much of the written content is **placeholder or draft** and is marked as such in
   practice. Legal and financing answers need professional review.
 - `insights.ts` — article bodies are outlines to be rewritten in Victor's voice.
 - `neighborhoods.ts` — descriptions and price guides are drafts.
-- `properties.ts` — sample listings, to be replaced with real ones.
+- `properties.ts` holds two real listings (Kiyovu villa for sale at $2.3M, furnished
+  two bedroom in Nyarutarama for rent at $2,500/month) with real photos. Bedroom and
+  bathroom counts, features and descriptions are drafts written from the photos and
+  must be confirmed by Victor.
 
 Do not remove the DRAFT/PLACEHOLDER markers when editing around them, and do not
 present placeholder content as final.
@@ -90,9 +98,9 @@ present placeholder content as final.
 
 - Photography (hero, portrait, headshot, property galleries)
 - Office street address — `site.ts` `address.line1` is empty, needed for the map
-- Instagram and YouTube URLs — empty in `site.ts`
-- Contact form and newsletter have no backend; `src/app/api/contact/route.ts` is a
-  stub that logs and returns success. Wire up Resend or similar before launch.
+- The contact form opens the visitor's own email app (mailto) addressed to `site.email`.
+  It sends nothing itself. `src/app/api/contact/route.ts` is an unused stub kept for a
+  future email service such as Resend. The newsletter form has no backend.
 - Privacy policy page — the site collects names, emails and phone numbers, so
   Rwanda's data protection law (No. 058/2021) is relevant. Needs qualified review.
 - Domain and analytics not configured; `site.url` is a placeholder.
@@ -106,3 +114,16 @@ present placeholder content as final.
 - Prices render through `formatPrice()` — do not hardcode currency symbols.
 - Phone, email and WhatsApp always come from `src/data/site.ts`, never inline.
 - Use the `cn()` helper for conditional classes.
+
+## Copy rules
+
+- No en dashes or em dashes in any visible text. Use commas, colons or brackets.
+- No sparkle or "AI" style icons or decoration.
+
+## Hidden sections
+
+Neighborhoods and Insights are switched off for now, not deleted. Their routes live in
+`src/app/_neighborhoods` and `src/app/_insights` (Next.js ignores `_` folders). To bring
+one back: rename the folder without the underscore, then uncomment its nav entries in
+`src/data/site.ts`, its sitemap entries in `src/app/sitemap.ts` and its home section in
+`src/app/page.tsx`. The footer newsletter form was removed; `newsletter-form.tsx` is unused.
