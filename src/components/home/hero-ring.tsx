@@ -189,7 +189,10 @@ function Ring({
     };
   }, [gl]);
 
-  const scale = size.width < 640 ? 1.05 : size.width < 1024 ? 0.9 : 1;
+  // Phones get a bigger ring that sits higher so the photos read clearly.
+  const small = size.width < 640;
+  const scale = small ? 1.22 : size.width < 1024 ? 0.9 : 1;
+  const lift = small ? 1.05 : 0.15;
 
   const frame = useRef(0);
 
@@ -224,7 +227,7 @@ function Ring({
   });
 
   return (
-    <group ref={tilt} rotation={[0.16, 0, -0.06]} position={[0, 0.15, 0]} scale={scale}>
+    <group ref={tilt} rotation={[0.16, 0, -0.06]} position={[0, lift, 0]} scale={scale}>
       <group ref={group}>
         {geometries.map((geo, i) => (
           <Panel
