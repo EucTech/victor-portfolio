@@ -2,15 +2,24 @@
  * PROPERTY LISTINGS
  * ------------------------------------------------------------------
  * To add a listing: copy a block, change the values, give it a unique
- * `slug`. Put photos in /public/images/properties/ and reference them
- * as "/images/properties/your-file.jpg".
+ * `slug`. Put photos in /public/images/properties/<slug>/ and reference
+ * them as "/images/properties/<slug>/01.jpg". The first image is the cover.
  *
- * Leave `images` empty and an elegant placeholder renders instead —
- * nothing breaks.
+ * Leave `images` empty and a branded placeholder renders instead.
+ *
+ * DRAFT: the two listings below have real photos and prices. Bedroom and
+ * bathroom counts, sizes, features and descriptions were written from the
+ * photos and must be confirmed by Victor before launch. A count of 0 hides
+ * that field on the site.
  */
 
 export type PropertyStatus = "For Sale" | "For Rent" | "Under Offer" | "Sold";
 export type PropertyType = "House" | "Apartment" | "Villa" | "Land" | "Commercial";
+
+export interface PropertyImage {
+  src: string;
+  alt: string;
+}
 
 export interface Property {
   slug: string;
@@ -22,241 +31,147 @@ export interface Property {
   priceQualifier?: string;   // e.g. "Starting from", "per month"
   status: PropertyStatus;
   type: PropertyType;
-  bedrooms: number;
-  bathrooms: number;
+  bedrooms: number;          // 0 hides it
+  bathrooms: number;         // 0 hides it
   sizeSqm?: number;
   plotSqm?: number;
   featured: boolean;
+  headline: string;          // one short line used on large showcase panels
   shortDescription: string;
   description: string[];     // one string per paragraph
   features: string[];
   nearby: string[];
   investmentHighlights?: string[];
-  images: string[];          // first image is the cover
+  images: PropertyImage[];   // first image is the cover
   floorPlans?: string[];
   videoUrl?: string;         // YouTube embed URL
   brochureUrl?: string;      // e.g. "/brochures/name.pdf"
 }
 
+const villa = (n: number, alt: string): PropertyImage => ({
+  src: `/images/properties/kiyovu-villa/${String(n).padStart(2, "0")}.jpg`,
+  alt,
+});
+
+const flat = (n: number, alt: string): PropertyImage => ({
+  src: `/images/properties/nyarutarama-furnished-2br/${String(n).padStart(2, "0")}.jpg`,
+  alt,
+});
+
 export const properties: Property[] = [
   {
-    slug: "nyarutarama-hillside-villa",
-    name: "Hillside Villa",
-    location: "Nyarutarama",
+    slug: "kiyovu-villa",
+    name: "The Kiyovu Villa",
+    location: "Kiyovu",
     city: "Kigali",
-    price: 685000,
+    price: 2300000,
     currency: "USD",
     status: "For Sale",
     type: "Villa",
-    bedrooms: 5,
-    bathrooms: 5,
-    sizeSqm: 480,
-    plotSqm: 1200,
+    bedrooms: 0, // TODO: confirm bedroom count
+    bathrooms: 0, // TODO: confirm bathroom count
     featured: true,
+    headline: "A private pool, a double height living room and the whole city below.",
     shortDescription:
-      "A five-bedroom villa on a quiet ridge in Nyarutarama, with terraced gardens and long views across the valley.",
+      "A contemporary villa in Kiyovu with a private pool, a double height living room and a long covered terrace looking out over Kigali.",
     description: [
-      "Set on a mature 1,200 sqm plot, this villa balances generous entertaining space with the privacy of a walled garden. Reception rooms open onto a covered terrace that runs the length of the house.",
-      "The upper floor holds four bedroom suites, each with built-in storage and en-suite bathrooms. A separate ground-floor suite works well as a guest room or home office.",
-      "Staff quarters, a double garage and a standby generator complete the property.",
+      "Set on one of Kigali's most established hills, this villa is arranged around a private pool and a terraced garden. The main living room rises a full two storeys, lit by a wall of clerestory glass, with an open steel staircase leading to the upper floor.",
+      "A long covered terrace runs along the upper level and frames an uninterrupted view across the city. Inside, a separate lounge, a fitted kitchen with an island and several bedroom suites with warm timber floors complete the house.",
+      "Kiyovu sits minutes from the city centre, embassies and the Kigali Convention Centre, which keeps demand for homes like this one consistently strong.",
     ],
     features: [
-      "Walled and gated compound",
-      "Covered entertaining terrace",
-      "Fitted kitchen with pantry",
-      "Standby generator",
-      "Borehole and water storage",
-      "Double garage",
-      "Staff quarters",
-      "Landscaped garden",
+      "Private swimming pool",
+      "Double height living room",
+      "Covered terrace with city views",
+      "Open plan kitchen with island",
+      "Separate upper lounge",
+      "Timber floors in living areas and bedrooms",
+      "Landscaped, terraced garden",
+      "Gated paved courtyard and parking",
     ],
     nearby: [
-      "Kigali Golf Club — 5 min",
-      "International schools — 10 min",
-      "Kigali Heights — 12 min",
-      "Kigali International Airport — 20 min",
+      "Kigali city centre, about 5 minutes",
+      "Embassies and government offices, about 5 minutes",
+      "Kigali Convention Centre, about 10 minutes",
+      "Kigali International Airport, about 25 minutes",
     ],
     investmentHighlights: [
-      "Established diplomatic and expatriate rental corridor",
-      "Consistent demand for four- and five-bedroom family homes",
-      "Low vacancy relative to newer developments",
+      "Kiyovu is one of the most established addresses in the city",
+      "Steady diplomatic and executive rental demand",
+      "Limited supply of contemporary villas with pools in the area",
     ],
-    images: [], // TODO: add photos
+    images: [
+      villa(1, "Front of the Kiyovu villa with its paved courtyard"),
+      villa(2, "Private pool with the villa behind it"),
+      villa(3, "Double height living room with an open staircase"),
+      villa(4, "Covered upper terrace looking out over Kigali"),
+      villa(5, "Swimming pool and pool house"),
+      villa(6, "Living room seen from the staircase"),
+      villa(7, "Living area opening onto the garden"),
+      villa(8, "View across Kigali from the garden"),
+      villa(9, "Upper lounge with tall windows"),
+      villa(10, "Main living room with dining area beyond"),
+      villa(11, "Fitted kitchen with a central island"),
+      villa(12, "Bedroom with timber floor and wardrobe"),
+      villa(13, "Bedroom with built in wardrobes"),
+      villa(14, "Guest washroom"),
+      villa(15, "Paved courtyard and entrance"),
+      villa(16, "Terraced garden"),
+      villa(17, "Garden lawn and planting"),
+    ],
   },
   {
-    slug: "kacyiru-skyline-apartment",
-    name: "Skyline Residence",
-    location: "Kacyiru",
+    slug: "nyarutarama-furnished-two-bedroom",
+    name: "Furnished Two Bedroom Residence",
+    location: "Nyarutarama",
     city: "Kigali",
-    price: 245000,
-    currency: "USD",
-    priceQualifier: "Starting from",
-    status: "For Sale",
-    type: "Apartment",
-    bedrooms: 3,
-    bathrooms: 2,
-    sizeSqm: 145,
-    featured: true,
-    shortDescription:
-      "Three-bedroom apartments in a managed building minutes from the city's main business district.",
-    description: [
-      "A limited release of three-bedroom apartments in a well-managed building, walking distance from Kacyiru's government and business district.",
-      "Each unit has an open-plan living and dining area, a fitted kitchen and a private balcony. The building offers secure parking, a backup generator and full-time security.",
-    ],
-    features: [
-      "Private balcony",
-      "Fitted kitchen",
-      "Secure underground parking",
-      "24-hour security",
-      "Backup generator",
-      "Lift access",
-      "Shared rooftop terrace",
-    ],
-    nearby: [
-      "Kigali Convention Centre — 8 min",
-      "Embassies and government offices — 5 min",
-      "Supermarkets and pharmacies — walking distance",
-    ],
-    investmentHighlights: [
-      "Strong short-let and corporate rental demand",
-      "Managed building reduces owner overhead",
-      "Walk-to-work location for the diplomatic sector",
-    ],
-    images: [],
-  },
-  {
-    slug: "kibagabaga-family-home",
-    name: "Garden Family Home",
-    location: "Kibagabaga",
-    city: "Kigali",
-    price: 320000,
-    currency: "USD",
-    status: "For Sale",
-    type: "House",
-    bedrooms: 4,
-    bathrooms: 3,
-    sizeSqm: 260,
-    plotSqm: 700,
-    featured: true,
-    shortDescription:
-      "A four-bedroom home on a level garden plot in a settled residential neighborhood.",
-    description: [
-      "A practical, well-built family house on a level 700 sqm plot. The layout keeps living areas on the ground floor and bedrooms above, with a garden that is genuinely usable rather than ornamental.",
-      "The neighborhood is settled and quiet, with good tarmac access and established neighbors.",
-    ],
-    features: [
-      "Level garden plot",
-      "Separate dining room",
-      "Fitted kitchen",
-      "Water storage tanks",
-      "Carport for two vehicles",
-      "Boundary wall with gate",
-    ],
-    nearby: [
-      "Kibagabaga Hospital — 6 min",
-      "Local markets — 5 min",
-      "Primary and secondary schools — 10 min",
-    ],
-    images: [],
-  },
-  {
-    slug: "gacuriro-modern-townhouse",
-    name: "Modern Townhouse",
-    location: "Gacuriro",
-    city: "Kigali",
-    price: 1800,
+    price: 2500,
     currency: "USD",
     priceQualifier: "per month",
     status: "For Rent",
-    type: "House",
-    bedrooms: 3,
-    bathrooms: 3,
-    sizeSqm: 180,
+    type: "Apartment",
+    bedrooms: 2,
+    bathrooms: 0, // TODO: confirm bathroom count
     featured: true,
+    headline: "Fully furnished, ready to move into, with a balcony over the valley.",
     shortDescription:
-      "A furnished three-bedroom townhouse in a gated estate with shared gardens and a pool.",
+      "A fully furnished two bedroom apartment in Nyarutarama with an open living space, a fitted kitchen and a long balcony with views across Kigali.",
     description: [
-      "Available furnished or unfurnished, this townhouse sits within a gated estate offering shared gardens, a swimming pool and a children's play area.",
-      "Well suited to relocating families and professionals on assignment in Kigali.",
+      "This apartment is furnished and ready to live in from the first day. The open living and dining space is finished with a lit coffered ceiling and sculptural ring pendants, and floor to ceiling glass opens onto a long private balcony.",
+      "The fitted kitchen has a stone topped peninsula, a gas hob, an oven and a large refrigerator. Both bedrooms have upholstered beds, built in wardrobes and their own window onto the view.",
+      "The building sits within a landscaped, gated residence in Nyarutarama, one of the most sought after neighborhoods for professionals and families relocating to Kigali.",
     ],
     features: [
-      "Gated estate with shared pool",
-      "Furnished or unfurnished",
-      "Fibre internet ready",
-      "Estate security and maintenance",
-      "Allocated parking",
+      "Fully furnished",
+      "Two bedrooms with built in wardrobes",
+      "Open plan living and dining",
+      "Fitted kitchen with gas hob and oven",
+      "Long private balcony with city views",
+      "Floor to ceiling glazing",
+      "Gated residence with landscaped grounds",
+      "Walk in shower",
     ],
     nearby: [
-      "Vision City — 5 min",
-      "International schools — 12 min",
-      "City centre — 15 min",
+      "Kigali Golf Club, about 5 minutes",
+      "International schools, about 10 minutes",
+      "Kigali Heights, about 10 minutes",
+      "Kigali International Airport, about 20 minutes",
     ],
-    images: [],
-  },
-  {
-    slug: "kanombe-investment-plot",
-    name: "Development Plot",
-    location: "Kanombe",
-    city: "Kigali",
-    price: 95000,
-    currency: "USD",
-    status: "For Sale",
-    type: "Land",
-    bedrooms: 0,
-    bathrooms: 0,
-    plotSqm: 1500,
-    featured: false,
-    shortDescription:
-      "A 1,500 sqm titled plot with road frontage, suitable for residential development.",
-    description: [
-      "A clean, titled 1,500 sqm plot with direct road frontage and utilities at the boundary. Zoned for residential development.",
-      "Suited to a buyer building a family home or a small residential scheme.",
+    images: [
+      flat(1, "Living room with sofas and a view through the balcony doors"),
+      flat(2, "Open living and dining space with the kitchen in front"),
+      flat(3, "Fitted kitchen with a stone topped peninsula"),
+      flat(4, "Living room under a lit coffered ceiling"),
+      flat(5, "Living room looking toward the dining area and kitchen"),
+      flat(6, "Main bedroom with an upholstered bed"),
+      flat(7, "Main bedroom with a window onto the balcony"),
+      flat(8, "Second bedroom with a view of the city"),
+      flat(9, "Second bedroom with a dressing table and mirror"),
+      flat(10, "Bedroom with a built in wardrobe"),
+      flat(11, "Bathroom with a glass walk in shower"),
+      flat(12, "Long private balcony"),
+      flat(13, "Landscaped grounds and the view across Kigali"),
     ],
-    features: [
-      "Freehold title deed",
-      "Road frontage",
-      "Electricity and water at boundary",
-      "Level to gently sloping",
-    ],
-    nearby: [
-      "Kigali International Airport — 8 min",
-      "Main tarmac road — 2 min",
-    ],
-    investmentHighlights: [
-      "Airport-corridor location with steady infrastructure investment",
-      "Clean title, ready for immediate transfer",
-    ],
-    images: [],
-  },
-  {
-    slug: "remera-commercial-space",
-    name: "Commercial Floor",
-    location: "Remera",
-    city: "Kigali",
-    price: 4500,
-    currency: "USD",
-    priceQualifier: "per month",
-    status: "Under Offer",
-    type: "Commercial",
-    bedrooms: 0,
-    bathrooms: 2,
-    sizeSqm: 320,
-    featured: false,
-    shortDescription:
-      "An open-plan commercial floor on a busy Remera junction, fitted and ready for occupation.",
-    description: [
-      "A 320 sqm open-plan floor suitable for offices, a clinic or a showroom, on a high-visibility junction in Remera.",
-      "Fitted with partitioning that can be retained or removed to suit the incoming tenant.",
-    ],
-    features: [
-      "Open-plan with flexible partitioning",
-      "Dedicated parking",
-      "Backup power",
-      "Two washrooms",
-      "High street visibility",
-    ],
-    nearby: ["Amahoro Stadium — 5 min", "Airport road — 3 min"],
-    images: [],
   },
 ];
 
@@ -266,7 +181,12 @@ export function getProperty(slug: string) {
   return properties.find((p) => p.slug === slug);
 }
 
-/** Unique values used to build the filter dropdowns */
+/** Every listing photo, used by the 3D hero and the gallery strip. */
+export const allPropertyImages = properties.flatMap((p) =>
+  p.images.map((img) => ({ ...img, slug: p.slug, property: p.name })),
+);
+
+/** Unique values used to build the filter controls */
 export const propertyFilters = {
   locations: [...new Set(properties.map((p) => p.location))].sort(),
   types: [...new Set(properties.map((p) => p.type))].sort(),
