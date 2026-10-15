@@ -63,7 +63,7 @@ slow this site down. Aim for under 300KB per image, roughly 2000px wide.
 - [ ] Review every FAQ answer for accuracy; get legal and financing answers checked
 - [ ] Rewrite the draft articles in `insights.ts`
 - [ ] Add real property listings and photography
-- [ ] Fill in `site.ts`: office address, Instagram URL, YouTube URL
+- [ ] Fill in `site.ts`: office address
 - [ ] Set `site.url` to the real domain
 - [ ] Connect the contact form to an email provider (see below)
 - [ ] Connect the newsletter form to a provider (Brevo, Mailchimp)
