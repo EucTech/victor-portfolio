@@ -54,6 +54,7 @@ export const realEstateAgentSchema = {
   name: site.name,
   description: site.description,
   url: site.url,
+  image: `${site.url}${site.portrait}`,
   telephone: site.phone,
   email: site.email,
   areaServed: {
@@ -68,7 +69,7 @@ export const realEstateAgentSchema = {
     addressCountry: "RW",
   },
   knowsLanguage: ["en"],
-  sameAs: [site.socials.instagram, site.socials.youtube].filter(Boolean),
+  sameAs: Object.values(site.socials),
 };
 
 export function breadcrumbSchema(trail: { name: string; path: string }[]) {
