@@ -9,9 +9,9 @@ import { formatDate } from "@/lib/utils";
 import { pageMeta, JsonLd, breadcrumbSchema } from "@/lib/seo";
 
 export const metadata = pageMeta({
-  title: "Insights — Kigali Property Market Notes",
+  title: "Insights: Kigali Property Market Notes",
   description:
-    "Practical articles on buying, selling and investing in property in Kigali, Rwanda — written for people making real decisions.",
+    "Practical articles on buying, selling and investing in property in Kigali, Rwanda, written for people making real decisions.",
   path: "/insights",
 });
 
@@ -22,7 +22,6 @@ export default function InsightsPage() {
   return (
     <>
       <PageHero
-        label="Insights"
         title="Notes on Property in Kigali"
         intro="Written to inform rather than to sell. If an article changes how you approach a decision, it has done its job."
       />
@@ -75,7 +74,7 @@ export default function InsightsPage() {
                       imageClassName="transition-transform duration-[900ms] group-hover:scale-105"
                       sizes="(max-width: 768px) 100vw, 33vw"
                     />
-                    <p className="mt-5 text-[0.6875rem] uppercase tracking-[0.16em] text-gold-deep">
+                    <p className="mt-5 text-[0.8125rem] text-muted">
                       {post.category}
                     </p>
                     <h3 className="mt-3 font-display text-xl leading-snug text-ink transition-colors group-hover:text-gold-deep">
