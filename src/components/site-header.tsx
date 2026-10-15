@@ -4,231 +4,279 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Menu, Phone, Mail } from "lucide-react";
+import {
+  AnimatePresence,
+  motion,
+  useMotionValueEvent,
+  useScroll,
+} from "motion/react";
+import { ArrowUpRight, Mail, Phone } from "lucide-react";
 import { nav, primaryNav, site, whatsappLink } from "@/data/site";
 import { cn } from "@/lib/utils";
-import { Container } from "./ui/container";
-import { ButtonLink } from "./ui/button";
-import { Sheet, SheetClose, SheetContent, SheetTrigger } from "./ui/sheet";
-import { InstagramIcon, YoutubeIcon } from "./ui/social-icons";
+import { InstagramIcon, LinkedInIcon, TikTokIcon, WhatsAppIcon, YoutubeIcon } from "./ui/social-icons";
+
+const ease = [0.16, 1, 0.3, 1] as const;
 
 export function SiteHeader() {
   const pathname = usePathname();
+  const { scrollY } = useScroll();
+  const [hidden, setHidden] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const [open, setOpen] = useState(false);
+
+  useMotionValueEvent(scrollY, "change", (y) => {
+    const prev = scrollY.getPrevious() ?? 0;
+    setScrolled(y > 24);
+    setHidden(y > 240 && y > prev && !open);
+  });
 
   useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 24);
-    onScroll();
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+    document.documentElement.style.overflow = open ? "hidden" : "";
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open]);
 
-  /**
-   * Every page opens with a dark hero, so until the user scrolls the header
-   * sits on a dark background and all of its text must be light.
-   */
-  const onDark = !scrolled;
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-500",
-        scrolled
-          ? "border-b border-line bg-white/95 backdrop-blur-sm"
-          : "border-b border-transparent bg-transparent",
-      )}
-    >
-      <Container size="wide">
-        <div className="flex h-20 items-center justify-between gap-4 md:h-24">
+    <>
+      <motion.header
+        animate={{ y: hidden ? -120 : 0 }}
+        transition={{ duration: 0.6, ease }}
+        className={cn("fixed inset-x-0 top-0", open ? "z-[70]" : "z-50")}
+      >
+        <div className="mx-auto flex h-20 w-full max-w-[1400px] items-center justify-between gap-4 px-4 sm:px-6 md:h-24 md:px-10">
           {/* Logo */}
           <Link
             href="/"
-            className="group flex shrink-0 items-center gap-3"
-            aria-label="Victor Chiemerie — home"
+            aria-label={`${site.name}, home`}
+            onClick={() => setOpen(false)}
+            className={cn(
+              "group relative z-[70] flex shrink-0 items-center gap-3 rounded-full py-1.5 pl-1.5 pr-4 transition-all duration-500",
+              scrolled && !open && "glass shadow-[0_8px_30px_rgba(10,10,10,0.06)]",
+            )}
           >
-            <Image
-              src="/brand/logo-mark.png"
-              alt=""
-              width={227}
-              height={174}
-              priority
-              className="h-9 w-auto sm:h-10 md:h-12"
-            />
+            <span className="flex size-10 items-center justify-center rounded-full bg-ink md:size-11">
+              <Image
+                src="/brand/logo-mark.png"
+                alt=""
+                width={227}
+                height={174}
+                priority
+                className="h-6 w-auto transition-transform duration-700 group-hover:scale-110 md:h-7"
+              />
+            </span>
             <span className="flex flex-col leading-none">
-              <span
-                className={cn(
-                  "font-display text-base tracking-[0.06em] transition-colors duration-500 sm:text-lg md:text-xl",
-                  onDark ? "text-white" : "text-ink",
-                )}
-              >
+              <span className="font-display text-[1.05rem] tracking-[0.04em] text-ink md:text-lg">
                 Victor Chiemerie
               </span>
-              <span
-                className={cn(
-                  "mt-1 text-[0.4375rem] uppercase tracking-[0.24em] transition-colors duration-500 sm:text-[0.5rem] md:text-[0.5625rem]",
-                  onDark ? "text-gold" : "text-gold-deep",
-                )}
-              >
-                Real Estate — Kigali
+              <span className="mt-1 text-[0.5rem] uppercase tracking-[0.26em] text-gold-deep md:text-[0.5625rem]">
+                Real Estate, Kigali
               </span>
             </span>
           </Link>
 
-          {/* Desktop nav */}
-          <nav className="hidden items-center gap-9 lg:flex">
+          {/* Desktop pill nav */}
+          <nav
+            aria-label="Main"
+            className="glass hidden items-center gap-1 rounded-full p-1.5 shadow-[0_8px_30px_rgba(10,10,10,0.06)] xl:flex"
+          >
             {primaryNav.map((item) => {
-              const active = pathname.startsWith(item.href);
+              const active = isActive(item.href);
               return (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "link-underline text-[0.8125rem] tracking-wide transition-colors duration-300",
-                    onDark
-                      ? active
-                        ? "text-gold"
-                        : "text-white/85 hover:text-gold"
-                      : active
-                        ? "text-gold-deep"
-                        : "text-ink-soft hover:text-gold-deep",
+                    "relative rounded-full px-4 py-2 text-[0.8125rem] transition-colors duration-300",
+                    active ? "text-white" : "text-ink-soft hover:text-ink",
                   )}
                 >
-                  {item.label}
+                  {active ? (
+                    <motion.span
+                      layoutId="nav-pill"
+                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                      className="absolute inset-0 rounded-full bg-ink"
+                    />
+                  ) : null}
+                  <span className="relative">{item.label}</span>
                 </Link>
               );
             })}
           </nav>
 
-          {/* Right side */}
-          <div className="flex shrink-0 items-center gap-3 md:gap-5">
-            <a
-              href={`tel:${site.phone}`}
+          {/* Right */}
+          <div className="relative z-[70] flex items-center gap-2">
+            <Link
+              href="/contact"
+              onClick={() => setOpen(false)}
               className={cn(
-                "hidden items-center gap-2 text-[0.8125rem] transition-colors duration-300 xl:flex",
-                onDark
-                  ? "text-white/80 hover:text-gold"
-                  : "text-ink-soft hover:text-gold-deep",
+                "group hidden items-center gap-3 rounded-full bg-ink py-1.5 pl-5 pr-1.5 text-[0.8125rem] text-white transition-colors duration-300 hover:bg-ink-soft sm:flex",
+                open && "sm:hidden",
               )}
             >
-              <Phone className="size-3.5" strokeWidth={1.5} />
-              {site.phoneDisplay}
-            </a>
+              Book a viewing
+              <span className="flex size-8 items-center justify-center rounded-full bg-white text-ink transition-transform duration-500 group-hover:rotate-45">
+                <ArrowUpRight className="size-4" strokeWidth={1.5} />
+              </span>
+            </Link>
 
-            <ButtonLink
-              href="/contact"
-              size="sm"
-              variant={onDark ? "ghostLight" : "primary"}
-              className="hidden sm:inline-flex"
+            <button
+              type="button"
+              onClick={() => setOpen((v) => !v)}
+              aria-expanded={open}
+              aria-controls="site-menu"
+              aria-label={open ? "Close menu" : "Open menu"}
+              className={cn(
+                "flex size-11 items-center justify-center rounded-full transition-colors duration-300",
+                open ? "bg-ink text-white" : "glass text-ink shadow-[0_8px_30px_rgba(10,10,10,0.06)]",
+              )}
             >
-              Let&apos;s Talk
-            </ButtonLink>
-
-            {/* Mobile menu */}
-            <Sheet>
-              <SheetTrigger asChild>
-                <button
-                  aria-label="Open menu"
+              <span className="relative block h-3 w-5">
+                <span
                   className={cn(
-                    "-mr-2 p-2 transition-colors duration-300 lg:hidden",
-                    onDark ? "text-white" : "text-ink",
+                    "absolute left-0 top-0 h-px w-5 bg-current transition-transform duration-500",
+                    open && "translate-y-1.5 rotate-45",
                   )}
-                >
-                  <Menu className="size-6" strokeWidth={1.5} />
-                </button>
-              </SheetTrigger>
-
-              <SheetContent title="Navigation">
-                <div className="flex h-full flex-col overflow-y-auto">
-                  <div className="border-b border-line px-6 py-6">
-                    <Image
-                      src="/brand/logo-mark.png"
-                      alt="Victor Chiemerie"
-                      width={227}
-                      height={174}
-                      className="h-11 w-auto"
-                    />
-                  </div>
-
-                  <nav className="flex flex-col px-6 py-2">
-                    {nav.map((item) => (
-                      <SheetClose asChild key={item.href}>
-                        <Link
-                          href={item.href}
-                          className={cn(
-                            "border-b border-line py-4 font-display text-2xl transition-colors last:border-0",
-                            pathname === item.href
-                              ? "text-gold-deep"
-                              : "text-ink hover:text-gold-deep",
-                          )}
-                        >
-                          {item.label}
-                        </Link>
-                      </SheetClose>
-                    ))}
-                  </nav>
-
-                  <div className="mt-auto border-t border-line px-6 py-7">
-                    <SheetClose asChild>
-                      <ButtonLink href="/contact" className="w-full">
-                        Let&apos;s Talk
-                      </ButtonLink>
-                    </SheetClose>
-
-                    <div className="mt-6 space-y-2 text-[0.875rem]">
-                      <a
-                        href={`tel:${site.phone}`}
-                        className="flex items-center gap-3 text-ink-soft transition-colors hover:text-gold-deep"
-                      >
-                        <Phone className="size-3.5 text-gold-deep" strokeWidth={1.5} />
-                        {site.phoneDisplay}
-                      </a>
-                      <a
-                        href={`mailto:${site.email}`}
-                        className="flex items-center gap-3 break-all text-ink-soft transition-colors hover:text-gold-deep"
-                      >
-                        <Mail className="size-3.5 shrink-0 text-gold-deep" strokeWidth={1.5} />
-                        {site.email}
-                      </a>
-                    </div>
-
-                    <div className="mt-6 flex gap-3">
-                      <a
-                        href={site.socials.instagram}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="Instagram"
-                        className="flex size-10 items-center justify-center border border-line text-ink-soft transition-colors hover:border-gold hover:text-gold-deep"
-                      >
-                        <InstagramIcon className="size-4" />
-                      </a>
-                      <a
-                        href={site.socials.youtube}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="YouTube"
-                        className="flex size-10 items-center justify-center border border-line text-ink-soft transition-colors hover:border-gold hover:text-gold-deep"
-                      >
-                        <YoutubeIcon className="size-4" />
-                      </a>
-                      <a
-                        href={whatsappLink()}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="WhatsApp"
-                        className="flex size-10 items-center justify-center border border-line text-ink-soft transition-colors hover:border-gold hover:text-gold-deep"
-                      >
-                        <svg viewBox="0 0 24 24" className="size-4 fill-current" aria-hidden="true">
-                          <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51l-.57-.01c-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347M12.05 21.785h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884a9.82 9.82 0 016.988 2.898 9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884" />
-                        </svg>
-                      </a>
-                    </div>
-                  </div>
-                </div>
-              </SheetContent>
-            </Sheet>
+                />
+                <span
+                  className={cn(
+                    "absolute bottom-0 left-0 h-px w-5 bg-current transition-transform duration-500",
+                    open ? "-translate-y-1.5 -rotate-45" : "w-3",
+                  )}
+                />
+              </span>
+            </button>
           </div>
         </div>
-      </Container>
-    </header>
+      </motion.header>
+
+      <AnimatePresence>
+        {open ? <FullMenu pathname={pathname} onClose={() => setOpen(false)} /> : null}
+      </AnimatePresence>
+    </>
+  );
+}
+
+function FullMenu({ pathname, onClose }: { pathname: string; onClose: () => void }) {
+  return (
+    <motion.div
+      id="site-menu"
+      role="dialog"
+      aria-modal="true"
+      aria-label="Site menu"
+      initial={{ clipPath: "inset(0 0 100% 0)" }}
+      animate={{ clipPath: "inset(0 0 0% 0)" }}
+      exit={{ clipPath: "inset(0 0 100% 0)" }}
+      transition={{ duration: 0.8, ease: [0.83, 0, 0.17, 1] }}
+      className="fixed inset-0 z-[60] overflow-y-auto bg-white"
+      data-lenis-prevent
+    >
+      <div className="mx-auto grid min-h-full max-w-[1400px] gap-12 px-6 pb-12 pt-32 md:grid-cols-12 md:px-10 md:pt-40">
+        <nav aria-label="All pages" className="md:col-span-8">
+          <ul>
+            {nav.map((item, i) => (
+              <li key={item.href} className="overflow-hidden border-b border-line">
+                <motion.div
+                  initial={{ y: "100%" }}
+                  animate={{ y: 0 }}
+                  transition={{ duration: 0.9, delay: 0.25 + i * 0.045, ease }}
+                >
+                  <Link
+                    href={item.href}
+                    onClick={onClose}
+                    className="group flex items-baseline justify-between gap-6 py-3 md:py-4"
+                  >
+                    <span className="flex items-baseline gap-5">
+                      <span className="w-6 text-[0.6875rem] tabular-nums text-gold-deep">
+                        {String(i + 1).padStart(2, "0")}
+                      </span>
+                      <span
+                        className={cn(
+                          "font-display text-[2rem] leading-none transition-all duration-500 group-hover:translate-x-3 group-hover:italic sm:text-[2.75rem] md:text-[3.5rem]",
+                          pathname === item.href ? "text-gold-deep" : "text-ink",
+                        )}
+                      >
+                        {item.label}
+                      </span>
+                    </span>
+                    <ArrowUpRight
+                      className="size-6 -translate-x-3 text-ink opacity-0 transition-all duration-500 group-hover:translate-x-0 group-hover:opacity-100"
+                      strokeWidth={1}
+                    />
+                  </Link>
+                </motion.div>
+              </li>
+            ))}
+          </ul>
+        </nav>
+
+        <motion.aside
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.55, ease }}
+          className="flex flex-col justify-end gap-10 md:col-span-4"
+        >
+          <div>
+            <p className="label">Speak to Victor</p>
+            <div className="mt-5 space-y-3 text-[0.9375rem]">
+              <a href={`tel:${site.phone}`} className="flex items-center gap-3 text-ink hover:text-gold-deep">
+                <Phone className="size-4 text-gold-deep" strokeWidth={1.5} />
+                {site.phoneDisplay}
+              </a>
+              <a
+                href={`mailto:${site.email}`}
+                className="flex items-center gap-3 break-all text-ink hover:text-gold-deep"
+              >
+                <Mail className="size-4 shrink-0 text-gold-deep" strokeWidth={1.5} />
+                {site.email}
+              </a>
+            </div>
+          </div>
+          <div className="flex gap-3">
+            <MenuSocial href={site.socials.instagram} label="Instagram">
+              <InstagramIcon className="size-4" />
+            </MenuSocial>
+            <MenuSocial href={site.socials.tiktok} label="TikTok">
+              <TikTokIcon className="size-4" />
+            </MenuSocial>
+            <MenuSocial href={site.socials.linkedin} label="LinkedIn">
+              <LinkedInIcon className="size-4" />
+            </MenuSocial>
+            <MenuSocial href={site.socials.youtube} label="YouTube">
+              <YoutubeIcon className="size-4" />
+            </MenuSocial>
+            <MenuSocial href={whatsappLink()} label="WhatsApp">
+              <WhatsAppIcon className="size-4" />
+            </MenuSocial>
+          </div>
+          <p className="max-w-xs text-[0.875rem] leading-relaxed text-muted">{site.brandStatement}</p>
+        </motion.aside>
+      </div>
+    </motion.div>
+  );
+}
+
+function MenuSocial({
+  href,
+  label,
+  children,
+}: {
+  href: string;
+  label: string;
+  children: React.ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      className="flex size-11 items-center justify-center rounded-full border border-line text-ink transition-colors duration-300 hover:border-ink hover:bg-ink hover:text-white"
+    >
+      {children}
+    </a>
   );
 }
