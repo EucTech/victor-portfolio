@@ -47,7 +47,7 @@ export const nav = [
   // { label: "Neighborhoods", href: "/neighborhoods" }, // hidden for now
   { label: "Services", href: "/services" },
   // { label: "Insights", href: "/insights" }, // hidden for now
-  { label: "Testimonials", href: "/testimonials" },
+  // { label: "Testimonials", href: "/testimonials" }, // hidden until real client quotes exist
   { label: "FAQs", href: "/faqs" },
   { label: "Contact", href: "/contact" },
 ] as const;
