@@ -9,7 +9,7 @@ import { pageMeta, JsonLd, breadcrumbSchema } from "@/lib/seo";
 export const metadata = pageMeta({
   title: "Client Testimonials",
   description:
-    "What clients say about working with Victor Chiemerie — buyers, sellers and investors in Kigali, Rwanda.",
+    "What clients say about working with Victor Chiemerie: buyers, sellers and investors in Kigali, Rwanda.",
   path: "/testimonials",
 });
 
@@ -19,7 +19,6 @@ export default function TestimonialsPage() {
   return (
     <>
       <PageHero
-        label="Client experiences"
         title="In Their Words"
         intro="The clearest measure of how I work is what clients say afterwards."
       />
