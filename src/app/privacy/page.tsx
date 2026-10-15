@@ -13,12 +13,12 @@ export const metadata = pageMeta({
 export default function PrivacyPage() {
   return (
     <>
-      <PageHero label="Legal" title="Privacy Policy" />
+      <PageHero title="Privacy Policy" />
 
       <section className="py-20 md:py-28">
         <Container size="narrow">
           <div className="border-l-2 border-gold bg-cream p-6 text-[0.875rem] leading-relaxed text-ink-soft">
-            <strong className="font-medium">Draft — needs legal review.</strong> This
+            <strong className="font-medium">Draft: needs legal review.</strong> This
             is a starting point only. Rwanda&apos;s Law No. 058/2021 on the protection
             of personal data and privacy applies to this site. Have this reviewed by a
             qualified professional before launch.
