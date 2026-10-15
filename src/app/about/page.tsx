@@ -9,7 +9,7 @@ import { pageMeta, JsonLd, breadcrumbSchema } from "@/lib/seo";
 import { site } from "@/data/site";
 
 export const metadata = pageMeta({
-  title: "About Victor Chiemerie — Realtor in Kigali",
+  title: "About Victor Chiemerie, Realtor in Kigali",
   description:
     "Victor Chiemerie is a Kigali-based realtor focused on clarity, honest advice and long-term relationships. Learn his story, his approach and how he works with clients.",
   path: "/about",
@@ -32,7 +32,6 @@ export default function AboutPage() {
   return (
     <>
       <PageHero
-        label="About"
         title="Helping People Make Better Property Decisions"
         intro="I believe the best real estate advice begins with understanding people before properties."
       />
@@ -43,21 +42,20 @@ export default function AboutPage() {
           <div className="grid gap-12 lg:grid-cols-12 lg:gap-20">
             <Reveal className="lg:col-span-5">
               <Media
-                src=""
-                alt="Victor Chiemerie"
+                src={site.portrait}
+                alt="Victor Chiemerie, realtor in Kigali"
                 label="Professional portrait"
-                className="aspect-[4/5] w-full lg:sticky lg:top-32"
+                imageClassName="object-[50%_25%]"
+                className="aspect-[4/5] w-full rounded-[2rem] lg:sticky lg:top-32"
                 sizes="(max-width: 1024px) 100vw, 40vw"
               />
             </Reveal>
 
             <div className="lg:col-span-7">
               <Reveal>
-                <p className="label mb-4">My story</p>
                 <h2 className="font-display text-[2rem] leading-[1.15] text-ink md:text-[2.5rem]">
                   Understanding people before properties
                 </h2>
-                <div className="mt-6 h-px w-12 bg-gold" />
                 <div className="mt-8 space-y-5 text-[0.9375rem] leading-relaxed text-muted">
                   <p>
                     My journey into real estate has been driven by a passion for
@@ -76,7 +74,6 @@ export default function AboutPage() {
               </Reveal>
 
               <Reveal delay={100} className="mt-16">
-                <p className="label mb-4">My approach</p>
                 <h3 className="font-display text-[1.75rem] leading-snug text-ink">
                   Buying or selling property shouldn&apos;t feel overwhelming
                 </h3>
@@ -88,13 +85,13 @@ export default function AboutPage() {
                   </p>
                   <p className="border-l-2 border-gold pl-6 text-ink">
                     I believe trust is earned through preparation, communication, and
-                    consistency — not promises.
+                    consistency, not promises.
                   </p>
                 </div>
               </Reveal>
 
               <Reveal delay={140} className="mt-16">
-                <p className="label mb-6">My values</p>
+                <h3 className="mb-6 font-display text-[1.75rem] leading-snug text-ink">My values</h3>
                 <ul className="grid grid-cols-1 gap-px overflow-hidden border border-line bg-line xs:grid-cols-2 sm:grid-cols-2">
                   {values.map((v) => (
                     <li
@@ -116,7 +113,6 @@ export default function AboutPage() {
         <Container size="wide">
           <Reveal>
             <SectionHeading
-              label="The process"
               title="How I work"
               intro="Seven steps, applied consistently, from the first conversation to long after the keys change hands."
             />
