@@ -9,8 +9,8 @@ export const site = {
   description:
     "Victor Chiemerie is a Kigali-based realtor helping buyers, sellers and investors make confident property decisions in Rwanda with honest advice and local market expertise.",
 
-  // TODO: replace with the live domain once purchased
-  url: "https://victorchiemerie.com",
+  // TODO: switch to the custom domain once purchased (currently the Vercel address)
+  url: "https://victor-portfolio-peach.vercel.app",
 
   phone: "+250795026599",
   phoneDisplay: "+250 795 026 599",
