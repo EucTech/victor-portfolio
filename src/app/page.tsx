@@ -1,20 +1,26 @@
 import Link from "next/link";
-import { ArrowRight, ArrowUpRight } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Container } from "@/components/ui/container";
 import { ButtonLink } from "@/components/ui/button";
 import { SectionHeading } from "@/components/ui/section-heading";
 import { Media } from "@/components/ui/media";
 import { Reveal } from "@/components/ui/reveal";
-import { PropertyCard } from "@/components/property-card";
 import { TestimonialCarousel } from "@/components/testimonial-carousel";
 import { CtaBand } from "@/components/cta-band";
-import { featuredProperties } from "@/data/properties";
+import { Hero } from "@/components/home/hero";
+import { ScrollStatement } from "@/components/home/scroll-statement";
+import { ListingShowcase } from "@/components/home/listing-showcase";
+import { HorizontalGallery } from "@/components/home/horizontal-gallery";
+import { HoverRows } from "@/components/home/hover-rows";
+import { Tilt } from "@/components/motion/tilt";
+import { Magnetic } from "@/components/motion/magnetic";
+import { featuredProperties, properties } from "@/data/properties";
 import { testimonials } from "@/data/testimonials";
-import { recentInsights } from "@/data/insights";
-import { differentiators } from "@/data/services";
+// import { recentInsights } from "@/data/insights";
+import { differentiators, services } from "@/data/services";
 import { neighborhoods } from "@/data/neighborhoods";
 import { site } from "@/data/site";
-import { formatDate } from "@/lib/utils";
+// import { formatDate } from "@/lib/utils";
 import { pageMeta } from "@/lib/seo";
 
 export const metadata = pageMeta({
@@ -23,284 +29,291 @@ export const metadata = pageMeta({
   path: "/",
 });
 
+/** Alternate photos from each listing so the ring mixes both homes. */
+function ringPhotos(limit = 14) {
+  const lists = properties.map((p) => p.images.map((img) => ({ ...img, slug: p.slug })));
+  const out: { src: string; alt: string; slug: string }[] = [];
+  for (let i = 0; out.length < limit && lists.some((l) => l[i]); i++) {
+    for (const l of lists) if (l[i] && out.length < limit) out.push(l[i]);
+  }
+  return out;
+}
+
+// function listingCount(location: string) {
+//   const n = properties.filter((p) => p.location === location).length;
+//   return n ? `${n} live listing${n === 1 ? "" : "s"}` : undefined;
+// }
+
+const marqueeWords = [
+  "Buying",
+  "Selling",
+  "Investment guidance",
+  ...neighborhoods.map((n) => n.name),
+  "Kiyovu",
+];
+
 export default function HomePage() {
+  const galleryProperty = featuredProperties.find((p) => p.images.length > 6);
+
   return (
     <>
-      {/* ---------------------------------------------------------- Hero */}
-      <section className="relative">
-        <Media
-          src=""
-          alt="Kigali skyline and contemporary architecture"
-          dark
-          label="Hero image or looping video"
-          priority
-          sizes="100vw"
-          className="absolute inset-0 h-full w-full"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-ink/75 via-ink/60 to-ink/80" />
+      <Hero photos={ringPhotos()} listings={featuredProperties} />
 
-        <Container size="wide">
-          <div className="relative flex min-h-[88vh] flex-col justify-center py-32 sm:py-36 md:py-40">
-            <p className="text-[0.6875rem] uppercase tracking-[0.24em] text-gold">
-              {site.role}
-            </p>
-            <h1 className="mt-6 max-w-4xl font-display text-[2.25rem] leading-[1.05] text-white sm:text-[2.75rem] md:text-[4.5rem] lg:text-[5rem]">
-              Victor Chiemerie
-              <span className="mt-3 block text-[1.375rem] leading-[1.25] text-white/85 sm:text-[1.75rem] md:text-[2.75rem]">
-                Helping You Make Confident Property Decisions in Rwanda
-              </span>
-            </h1>
-            <p className="mt-8 max-w-xl text-[0.9375rem] leading-relaxed text-white/65 md:text-base">
-              Whether you&apos;re searching for a place to call home, expanding your
-              investment portfolio, or preparing to sell your property in Kigali, I
-              help you make the process seamless.
-            </p>
-
-            <div className="mt-10 flex flex-col gap-3 sm:mt-11 sm:flex-row sm:flex-wrap sm:gap-4">
-              <ButtonLink href="/properties" variant="gold">
-                Explore Properties
-              </ButtonLink>
-              <ButtonLink href="/contact" variant="ghostLight">
-                Let&apos;s Talk
-              </ButtonLink>
-            </div>
-
-            <div className="mt-12 flex flex-wrap gap-x-8 gap-y-3 text-[0.8125rem]">
-              <Link
-                href="/neighborhoods"
-                className="link-underline text-white/70 transition-colors hover:text-gold"
-              >
-                Neighborhoods
-              </Link>
-              <Link
-                href="/insights/why-investors-are-looking-at-kigali"
-                className="link-underline text-white/70 transition-colors hover:text-gold"
-              >
-                Why invest in Kigali?
-              </Link>
-            </div>
-          </div>
-        </Container>
-      </section>
-
-      {/* ------------------------------------------- Featured properties */}
-      <section className="py-24 md:py-32">
-        <Container size="wide">
-          <Reveal className="flex flex-wrap items-end justify-between gap-6">
-            <SectionHeading
-              label="Featured"
-              title="A curated collection of available properties"
-            />
-            <Link
-              href="/properties"
-              className="link-underline inline-flex items-center gap-2 pb-2 text-[0.75rem] uppercase tracking-[0.16em] text-ink"
-            >
-              View all properties
-              <ArrowRight className="size-3.5" strokeWidth={1.5} />
-            </Link>
-          </Reveal>
-
-          <div className="mt-16 grid gap-x-8 gap-y-14 sm:grid-cols-2 lg:grid-cols-3">
-            {featuredProperties.map((p, i) => (
-              <Reveal key={p.slug} delay={i * 80}>
-                <PropertyCard property={p} />
-              </Reveal>
-            ))}
-          </div>
-        </Container>
-      </section>
-
-      {/* -------------------------------------------- Why work with me */}
-      <section className="bg-cream py-24 md:py-32">
-        <Container size="wide">
-          <Reveal>
-            <SectionHeading
-              label="Why work with Victor"
-              title="Buying or selling property is one of life's biggest decisions"
-              intro="My role is to simplify the process, provide honest advice, offer the best property listing within your request, and help you make decisions with confidence and peace of mind."
-            />
-          </Reveal>
-
-          <div className="mt-16 grid gap-px overflow-hidden border border-line bg-line sm:grid-cols-2 lg:grid-cols-4">
-            {differentiators.map((d, i) => (
-              <Reveal key={d.title} delay={i * 80} className="bg-cream">
-                <div className="h-full bg-white p-8 transition-colors duration-500 hover:bg-gold-tint md:p-10">
-                  <span className="font-display text-3xl text-gold">
-                    0{i + 1}
+      {/* Marquee */}
+      <section aria-hidden="true" className="overflow-hidden border-y border-line py-6">
+        <div className="animate-marquee flex w-max">
+          {[0, 1].map((copy) => (
+            <div key={copy} className="flex shrink-0 items-center">
+              {marqueeWords.map((w) => (
+                <span key={`${copy}-${w}`} className="flex items-center">
+                  <span className="px-8 font-display text-[1.75rem] italic text-ink md:text-[2.25rem]">
+                    {w}
                   </span>
-                  <h3 className="mt-6 font-display text-xl leading-snug text-ink">
-                    {d.title}
-                  </h3>
-                  <p className="mt-3 text-[0.9375rem] leading-relaxed text-muted">
-                    {d.body}
-                  </p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </Container>
+                  <span className="size-1.5 rounded-full bg-gold" />
+                </span>
+              ))}
+            </div>
+          ))}
+        </div>
       </section>
 
-      {/* ---------------------------------------------------- Meet Victor */}
-      <section className="py-24 md:py-32">
+      {/* Statement */}
+      <section className="py-28 md:py-44">
         <Container size="wide">
-          <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
-            <Reveal>
-              <Media
-                src=""
-                alt="Victor Chiemerie"
-                label="Professional portrait"
-                className="aspect-[4/5] w-full"
-                sizes="(max-width: 1024px) 100vw, 50vw"
+          <div className="grid gap-10 md:grid-cols-12">
+            <div className="md:col-span-10">
+              <ScrollStatement
+                text="Real estate is about more than transactions. It's about understanding people's goals and helping them make decisions that shape their future, with honest advice at every step."
+                accent={["people's", "future"]}
               />
-            </Reveal>
-
-            <Reveal delay={120}>
-              <p className="label mb-4">Meet Victor</p>
-              <h2 className="font-display text-[2rem] leading-[1.15] text-ink md:text-[2.75rem]">
-                Real estate is about more than transactions
-              </h2>
-              <div className="mt-6 h-px w-12 bg-gold" />
-              <div className="mt-8 space-y-5 text-[0.9375rem] leading-relaxed text-muted">
-                <p>
-                  It&apos;s about understanding people&apos;s goals and helping them
-                  make decisions that shape their future.
-                </p>
-                <p>
-                  My approach is built on listening first, offering honest advice, and
-                  creating an experience that feels straightforward and personal.
-                  Whether you&apos;re purchasing your first home, relocating to Rwanda,
-                  or expanding your property portfolio, I leverage my knowledge,
-                  experience, and every resource to ensure you receive the best
-                  possible outcome.
-                </p>
-                <p className="text-ink">
-                  Let&apos;s connect — I look forward to serving you.
-                </p>
-              </div>
-
-              <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-4">
-                <ButtonLink href="/about" variant="outline">
-                  Read My Story
-                </ButtonLink>
-                <div className="text-[0.8125rem] text-muted">
-                  <a
-                    href={`tel:${site.phone}`}
-                    className="block transition-colors hover:text-gold-deep"
-                  >
-                    {site.phoneDisplay}
-                  </a>
-                  <a
-                    href={`mailto:${site.email}`}
-                    className="block transition-colors hover:text-gold-deep"
-                  >
-                    {site.email}
-                  </a>
-                </div>
-              </div>
-            </Reveal>
-          </div>
-        </Container>
-      </section>
-
-      {/* -------------------------------------------------- Neighborhoods */}
-      <section className="border-y border-line bg-cream py-24 md:py-32">
-        <Container size="wide">
-          <Reveal className="flex flex-wrap items-end justify-between gap-6">
-            <SectionHeading
-              label="Where to live"
-              title="Know the neighborhood before you choose the house"
-            />
-            <Link
-              href="/neighborhoods"
-              className="link-underline inline-flex items-center gap-2 pb-2 text-[0.75rem] uppercase tracking-[0.16em] text-ink"
-            >
-              All neighborhoods
-              <ArrowRight className="size-3.5" strokeWidth={1.5} />
-            </Link>
-          </Reveal>
-
-          <div className="mt-16 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-            {neighborhoods.map((n, i) => (
-              <Reveal key={n.slug} delay={i * 70}>
-                <Link href={`/neighborhoods/${n.slug}`} className="group block">
-                  <Media
-                    src={n.image}
-                    alt={n.name}
-                    label="Neighborhood"
-                    className="aspect-[3/4] w-full"
-                    imageClassName="transition-transform duration-[900ms] group-hover:scale-105"
-                    sizes="(max-width: 640px) 100vw, 25vw"
-                  />
-                  <h3 className="mt-5 flex items-center gap-2 font-display text-xl text-ink transition-colors group-hover:text-gold-deep">
-                    {n.name}
-                    <ArrowUpRight
-                      className="size-3.5 opacity-0 transition-opacity group-hover:opacity-100"
-                      strokeWidth={1.5}
-                    />
-                  </h3>
-                  <p className="mt-1 text-[0.8125rem] text-muted">{n.tagline}</p>
+              <Reveal delay={100} className="mt-12">
+                <Link
+                  href="/about"
+                  className="group inline-flex items-center gap-3 text-[0.8125rem] uppercase tracking-[0.16em] text-ink"
+                >
+                  <span className="link-underline">Read my story</span>
+                  <span className="flex size-10 items-center justify-center rounded-full border border-ink/15 transition-colors duration-300 group-hover:bg-ink group-hover:text-white">
+                    <ArrowRight className="size-4" strokeWidth={1.5} />
+                  </span>
                 </Link>
               </Reveal>
-            ))}
+            </div>
           </div>
         </Container>
       </section>
 
-      {/* --------------------------------------------------- Testimonials */}
-      <section className="py-24 md:py-32">
+      {/* Featured listings */}
+      <section>
         <Container size="wide">
-          <Reveal>
-            <SectionHeading
-              label="Client experiences"
-              title="What clients say"
-              align="center"
-            />
-          </Reveal>
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <SectionHeading title="Homes worth slowing down for" />
+            <Reveal delay={150}>
+              <Link
+                href="/properties"
+                className="group inline-flex items-center gap-3 pb-2 text-[0.8125rem] uppercase tracking-[0.16em] text-ink"
+              >
+                <span className="link-underline">All properties</span>
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" strokeWidth={1.5} />
+              </Link>
+            </Reveal>
+          </div>
+        </Container>
+        <ListingShowcase listings={featuredProperties} />
+      </section>
+
+      {/* Walk through one home */}
+      {galleryProperty ? (
+        <HorizontalGallery
+          title={`Take a slow walk through ${galleryProperty.name.replace(/^The /, "the ")}`}
+          href={`/properties/${galleryProperty.slug}`}
+          images={galleryProperty.images.slice(1, 10)}
+        />
+      ) : null}
+
+      {/* Why work with Victor */}
+      <section className="py-28 md:py-40">
+        <Container size="wide">
+          <div className="grid gap-14 lg:grid-cols-12 lg:gap-20">
+            <div className="lg:col-span-5">
+              <div className="lg:sticky lg:top-36">
+                <SectionHeading
+                  title="One of life's biggest decisions deserves a steady hand"
+                  intro="My role is to simplify the process, give honest advice, find the best listings within your brief, and help you decide with confidence and peace of mind."
+                />
+                <Reveal delay={250} className="mt-10">
+                  <ButtonLink href="/services" variant="outline">
+                    How I help
+                  </ButtonLink>
+                </Reveal>
+              </div>
+            </div>
+            <div className="grid gap-5 sm:grid-cols-2 lg:col-span-7">
+              {differentiators.map((d, i) => (
+                <Reveal key={d.title} delay={i * 90} className={i % 2 === 1 ? "sm:translate-y-16" : undefined}>
+                  <Tilt className="group h-full">
+                    <div className="flex h-full min-h-[18rem] flex-col justify-between rounded-[1.75rem] border border-line bg-white p-8 transition-colors duration-500 group-hover:border-transparent group-hover:bg-stone md:p-10">
+                      <span className="font-display text-[3.5rem] leading-none text-gold [transform:translateZ(40px)]">
+                        0{i + 1}
+                      </span>
+                      <div className="[transform:translateZ(24px)]">
+                        <h3 className="font-display text-[1.625rem] leading-tight text-ink">{d.title}</h3>
+                        <p className="mt-3 text-[0.9375rem] leading-relaxed text-muted">{d.body}</p>
+                      </div>
+                    </div>
+                  </Tilt>
+                </Reveal>
+              ))}
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* Services */}
+      <section className="pb-28 md:pb-40">
+        <Container size="wide">
+          <SectionHeading title="Buying, selling and investing, handled personally" className="mb-14" />
+          <HoverRows
+            rows={services.map((s) => ({
+              href: `/services#${s.slug}`,
+              title: s.title,
+              body: s.summary,
+            }))}
+          />
+        </Container>
+      </section>
+
+      {/* Meet Victor */}
+      <section className="bg-stone py-28 md:py-40">
+        <Container size="wide">
+          <div className="grid items-center gap-14 lg:grid-cols-12 lg:gap-20">
+            <Reveal className="lg:col-span-5">
+              <Tilt max={5} className="group">
+                <Media
+                  src={site.portrait}
+                  alt="Victor Chiemerie, realtor in Kigali"
+                  label="Professional portrait"
+                  imageClassName="object-[50%_25%]"
+                  className="aspect-[4/5] w-full rounded-[2rem]"
+                  sizes="(max-width: 1024px) 100vw, 40vw"
+                />
+              </Tilt>
+            </Reveal>
+            <div className="lg:col-span-7">
+              <SectionHeading title="Listening first, advising honestly" />
+              <Reveal delay={150}>
+                <div className="mt-8 max-w-xl space-y-5 text-[1rem] leading-relaxed text-muted">
+                  <p>
+                    My approach is built on listening first, offering honest advice, and
+                    creating an experience that feels straightforward and personal.
+                  </p>
+                  <p>
+                    Whether you&apos;re purchasing your first home, relocating to Rwanda, or
+                    expanding your property portfolio, I bring my knowledge, experience and
+                    every resource to make sure you receive the best possible outcome.
+                  </p>
+                  <p className="font-display text-[1.5rem] italic leading-snug text-ink">
+                    Let&apos;s connect. I look forward to serving you.
+                  </p>
+                </div>
+                <div className="mt-10 flex flex-wrap items-center gap-x-8 gap-y-5">
+                  <Magnetic>
+                    <ButtonLink href="/about">Read my story</ButtonLink>
+                  </Magnetic>
+                  <div className="text-[0.875rem]">
+                    <a href={`tel:${site.phone}`} className="block text-ink hover:text-gold-deep">
+                      {site.phoneDisplay}
+                    </a>
+                    <a href={`mailto:${site.email}`} className="block text-muted hover:text-gold-deep">
+                      {site.email}
+                    </a>
+                  </div>
+                </div>
+              </Reveal>
+            </div>
+          </div>
+        </Container>
+      </section>
+
+      {/* Neighborhoods section, hidden for now. To restore: uncomment this and
+          listingCount above, and rename src/app/_neighborhoods back to neighborhoods.
+      <section className="py-28 md:py-40">
+        <Container size="wide">
+          <div className="mb-14 flex flex-wrap items-end justify-between gap-6">
+            <SectionHeading title="Know the neighborhood before you choose the house" />
+            <Reveal delay={150}>
+              <Link
+                href="/neighborhoods"
+                className="group inline-flex items-center gap-3 pb-2 text-[0.8125rem] uppercase tracking-[0.16em] text-ink"
+              >
+                <span className="link-underline">All neighborhoods</span>
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" strokeWidth={1.5} />
+              </Link>
+            </Reveal>
+          </div>
+          <HoverRows
+            rows={neighborhoods.map((n) => ({
+              href: `/neighborhoods/${n.slug}`,
+              title: n.name,
+              meta: listingCount(n.name),
+              body: n.tagline,
+            }))}
+          />
+        </Container>
+      </section>
+      */}
+
+      {/* Testimonials */}
+      <section className="bg-stone py-28 md:py-40">
+        <Container size="wide">
+          <SectionHeading title="What clients say" align="center" />
           <Reveal delay={100} className="mt-16">
             <TestimonialCarousel items={testimonials} />
           </Reveal>
         </Container>
       </section>
 
-      {/* -------------------------------------------------------- Insights */}
-      <section className="bg-cream py-24 md:py-32">
+      {/* Insights section, hidden for now. To restore: uncomment this and its
+          imports, and rename src/app/_insights back to insights.
+      <section className="py-28 md:py-40">
         <Container size="wide">
-          <Reveal className="flex flex-wrap items-end justify-between gap-6">
-            <SectionHeading
-              label="Insights"
-              title="Notes on the Kigali property market"
-            />
-            <Link
-              href="/insights"
-              className="link-underline inline-flex items-center gap-2 pb-2 text-[0.75rem] uppercase tracking-[0.16em] text-ink"
-            >
-              View all articles
-              <ArrowRight className="size-3.5" strokeWidth={1.5} />
-            </Link>
-          </Reveal>
+          <div className="flex flex-wrap items-end justify-between gap-6">
+            <SectionHeading title="Notes on the Kigali property market" />
+            <Reveal delay={150}>
+              <Link
+                href="/insights"
+                className="group inline-flex items-center gap-3 pb-2 text-[0.8125rem] uppercase tracking-[0.16em] text-ink"
+              >
+                <span className="link-underline">All articles</span>
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" strokeWidth={1.5} />
+              </Link>
+            </Reveal>
+          </div>
 
-          <div className="mt-16 grid gap-x-8 gap-y-12 md:grid-cols-3">
+          <div className="mt-16 grid gap-x-6 gap-y-12 md:grid-cols-3">
             {recentInsights.map((post, i) => (
-              <Reveal key={post.slug} delay={i * 80}>
-                <Link href={`/insights/${post.slug}`} className="group block">
-                  <Media
-                    src={post.image}
-                    alt={post.title}
-                    label="Article image"
-                    className="aspect-[3/2] w-full"
-                    imageClassName="transition-transform duration-[900ms] group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, 33vw"
-                  />
-                  <p className="mt-5 text-[0.6875rem] uppercase tracking-[0.16em] text-gold-deep">
-                    {post.category}
-                  </p>
-                  <h3 className="mt-3 font-display text-xl leading-snug text-ink transition-colors group-hover:text-gold-deep">
+              <Reveal key={post.slug} delay={i * 90}>
+                <Link href={`/insights/${post.slug}`} data-cursor="Read" className="group block">
+                  <div className="relative overflow-hidden rounded-[1.5rem]">
+                    <Media
+                      src={post.image}
+                      alt={post.title}
+                      label="Article image"
+                      className="aspect-[4/3] w-full"
+                      imageClassName="transition-transform duration-[1.2s] group-hover:scale-105"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                    <span className="glass absolute left-4 top-4 rounded-full px-3 py-1.5 text-[0.625rem] uppercase tracking-[0.16em] text-ink">
+                      {post.category}
+                    </span>
+                  </div>
+                  <h3 className="mt-6 flex items-start justify-between gap-4 font-display text-[1.5rem] leading-snug text-ink">
                     {post.title}
+                    <ArrowUpRight
+                      className="mt-1.5 size-5 shrink-0 text-gold-deep transition-transform duration-500 group-hover:rotate-45"
+                      strokeWidth={1.25}
+                    />
                   </h3>
-                  <p className="mt-3 text-[0.9375rem] leading-relaxed text-muted">
-                    {post.excerpt}
-                  </p>
+                  <p className="mt-3 text-[0.9375rem] leading-relaxed text-muted">{post.excerpt}</p>
                   <p className="mt-4 text-[0.75rem] text-muted/80">
                     {formatDate(post.date)} · {post.readMinutes} min read
                   </p>
@@ -310,6 +323,7 @@ export default function HomePage() {
           </div>
         </Container>
       </section>
+      */}
 
       <CtaBand />
     </>
