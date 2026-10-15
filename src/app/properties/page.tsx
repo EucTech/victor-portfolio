@@ -30,9 +30,9 @@ export default function PropertiesPage() {
   return (
     <>
       <PageHero
-        label="Properties"
+        image="/images/properties/kiyovu-villa/02.jpg"
         title="Available Properties in Kigali"
-        intro="A curated selection of homes, apartments and land. Not everything I represent appears here — tell me what you're looking for and I'll send options directly."
+        intro="A curated selection of homes, apartments and land. Not everything I represent appears here. Tell me what you're looking for and I'll send options directly."
       />
 
       <section className="py-20 md:py-28">
