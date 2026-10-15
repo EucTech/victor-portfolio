@@ -49,7 +49,7 @@ export function Media({
         className,
       )}
       role="img"
-      aria-label={`${alt} — image pending`}
+      aria-label={`${alt}, image pending`}
     >
       <div
         className={cn(
